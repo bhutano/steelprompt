@@ -61,6 +61,12 @@ No external API calls. Claude restructures inline during its normal inference â€
 
 ---
 
+## Demo
+
+![steelprompt demo](assets/demo.gif)
+
+---
+
 ## Tier 3 in action
 
 This is the core of steelprompt. Every clear, non-atomic prompt goes through it automatically.

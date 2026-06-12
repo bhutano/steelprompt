@@ -20,7 +20,7 @@ Apply Anthropic's official prompt engineering guidelines to any prompt.
 
 If the received prompt matches `/steelprompt mode X`:
 
-1. Write `{"mode": "X"}` to `$CLAUDE_PLUGIN_ROOT/.steelpromptrc` using the Write tool
+1. Run `Bash(echo $CLAUDE_PLUGIN_ROOT)` to get the plugin root path, then write `{"mode": "X"}` to `<CLAUDE_PLUGIN_ROOT>/.steelpromptrc` using the Write tool with the absolute path
 2. Confirm: "Mode changed to **X**. Active from the next prompt."
 
 Available modes:
