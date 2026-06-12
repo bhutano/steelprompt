@@ -1,0 +1,13 @@
+{
+  "name": "local-dev",
+  "description": "Local dev marketplace for steelprompt plugin testing",
+  "owner": {
+    "name": "bhutano"
+  },
+  "plugins": [
+    {
+      "name": "steelprompt",
+      "source": "."
+    }
+  ]
+}

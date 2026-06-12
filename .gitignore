@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+*.egg-info/
+dist/
+.steelpromptrc
+graphify-out/
+raw/
+docs/superpowers/
+docs/plans/
+docs/specs/
+.dev-marketplace/

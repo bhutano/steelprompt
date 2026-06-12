@@ -1,0 +1,12 @@
+{
+  "name": "steelprompt",
+  "description": "Applies Anthropic's official prompt engineering methodology to every Claude Code interaction. 3-tier hook (bypass/ask/apply), 4 switchable modes (full/preview/ask-only/off), manual /steelprompt skill. No external API calls.",
+  "version": "0.2.0",
+  "author": {
+    "name": "bhutano",
+    "url": "https://github.com/bhutano"
+  },
+  "repository": "https://github.com/bhutano/steelprompt",
+  "homepage": "https://github.com/bhutano/steelprompt",
+  "license": "MIT"
+}
