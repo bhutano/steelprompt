@@ -74,9 +74,13 @@ Do NOT show the restructuring to the user — apply it silently. (PREVIEW MODE b
 ## PREVIEW MODE
 If this line is present: STEELPROMPT_PREVIEW=true
 
-Then instead of responding silently:
-1. Show the restructured prompt in a code block preceded by **Engineered prompt:**
+**STOP. Do NOT read files. Do NOT execute. Do NOT call any tools. Show the preview first.**
+
+Apply the 7-principle restructuring internally (Step B above), then:
+1. Output **Engineered prompt:** followed by the restructured prompt in a code block
 2. Use AskUserQuestion with options: "Run" / "Edit" / "Cancel"
 3. If "Run": execute the engineered prompt immediately
 4. If "Edit": show raw text, say "Copy, edit, and paste as a new message."
 5. If "Cancel": stop
+
+No tool calls before step 1. No file reads. No analysis. Preview first, everything else after.
