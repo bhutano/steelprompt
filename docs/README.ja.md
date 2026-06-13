@@ -12,6 +12,8 @@
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)
 
+![demo](../steel_demo.gif)
+
 **あなたが入力するすべてのプロンプトは、Claude が処理する前に Anthropic の7つの公式プロンプトエンジニアリング原則に基づいて自動的に再構成されます。**
 
 ✦ セットアップ不要 · ✦ APIキー不要 · ✦ インライン実行 · ✦ 4つの切替可能なモード

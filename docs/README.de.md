@@ -12,6 +12,8 @@
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)
 
+![demo](../steel_demo.gif)
+
 **Jeder Prompt, den du eingibst, wird still nach Anthropics 7 offiziellen Prompt-Engineering-Prinzipien umstrukturiert, bevor Claude ihn sieht.**
 
 ✦ Kein Setup · ✦ Keine API-Schlüssel · ✦ Läuft inline · ✦ 4 wechselbare Modi

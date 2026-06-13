@@ -12,6 +12,8 @@
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)
 
+![demo](../steel_demo.gif)
+
 **你输入的每个提示都会被自动按照 Anthropic 的 7 个官方提示工程原则重新结构化，然后才会被 Claude 看到。**
 
 ✦ 零配置 · ✦ 无需 API 密钥 · ✦ 内联运行 · ✦ 4 种可切换的模式

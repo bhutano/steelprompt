@@ -12,6 +12,8 @@
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)
 
+![demo](../steel_demo.gif)
+
 **입력하는 모든 프롬프트는 Claude가 보기 전에 Anthropic의 7가지 공식 프롬프트 엔지니어링 원칙에 따라 자동으로 재구성됩니다.**
 
 ✦ 설정 불필요 · ✦ API 키 불필요 · ✦ 인라인 실행 · ✦ 4가지 전환 가능한 모드

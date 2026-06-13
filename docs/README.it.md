@@ -12,6 +12,8 @@
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)
 
+![demo](../steel_demo.gif)
+
 **Ogni prompt che scrivi viene ristrutturato silenziosamente secondo i 7 principi ufficiali di prompt engineering di Anthropic, prima che Claude lo veda.**
 
 ✦ Zero configurazione · ✦ Nessuna API key · ✦ Esecuzione inline · ✦ 4 modalità selezionabili
