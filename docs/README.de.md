@@ -324,7 +324,7 @@ Kein Claude Code? Das gleiche Prompt-Engineering-Framework steht dir direkt auf 
 1. Öffne [claude.ai](https://claude.ai) im Browser
 2. Klicke auf das Profilsymbol → **Einstellungen** → **Profil**
 3. Finde **„Benutzerdefinierte Anweisungen“** (oder *„Wie soll Claude antworten?“*)
-4. Kopiere den Inhalt von [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) und füge ihn dort ein → Speichern
+4. Kopiere den Inhalt von [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md) und füge ihn dort ein → Speichern
 
 Das war’s. Jeder Prompt, den du in Claude.ai eingibst, wird mit demselben 3-Stufen-Protokoll still umstrukturiert, bevor Claude antwortet.
 

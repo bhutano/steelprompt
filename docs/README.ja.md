@@ -324,7 +324,7 @@ Claude Codeを使わない方でも、[claude.ai](https://claude.ai)で同じプ
 1. ブラウザで[claude.ai](https://claude.ai)を開く
 2. プロフィールアイコン → **設定** → **プロフィール** をクリック
 3. **「カスタム指示」**（または*「Claudeにどのように応答してほしいですか？」*）を探す
-4. [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md)の内容をコピーして貼り付け → 保存
+4. [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md)の内容をコピーして貼り付け → 保存
 
 以上です。Claude.aiで入力するすべてのプロンプトは、Claudeが応答する前に同じ 3 層プロトコルで自動的に再構成されます。
 

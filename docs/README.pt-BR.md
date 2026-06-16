@@ -327,7 +327,7 @@ Não usa o Claude Code? Você pode obter o mesmo framework de engenharia de prom
 1. Abra [claude.ai](https://claude.ai) no seu navegador
 2. Clique no ícone de perfil → **Configurações** → **Perfil**
 3. Encontre **"Instruções personalizadas"** (ou *"Como você gostaria que o Claude respondesse?"*)
-4. Copie o conteúdo de [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) e cole lá → Salvar
+4. Copie o conteúdo de [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md) e cole lá → Salvar
 
 Pronto. Cada prompt que você escrever no Claude.ai será silenciosamente reestruturado usando o mesmo protocolo de 3 camadas antes do Claude responder.
 

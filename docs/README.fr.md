@@ -324,7 +324,7 @@ Vous n’utilisez pas Claude Code ? Vous pouvez obtenir le même framework d’
 1. Ouvrez [claude.ai](https://claude.ai) dans votre navigateur
 2. Cliquez sur l’icône de profil → **Paramètres** → **Profil**
 3. Trouvez **« Instructions personnalisées »** (ou *« Comment souhaitez-vous que Claude réponde ? »*)
-4. Copiez le contenu de [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) et collez-le là → Enregistrer
+4. Copiez le contenu de [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md) et collez-le là → Enregistrer
 
 C’est tout. Chaque prompt que vous écrivez dans Claude.ai sera silencieusement restructuré selon le même protocole à 3 niveaux avant que Claude ne réponde.
 

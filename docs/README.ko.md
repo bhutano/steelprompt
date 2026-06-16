@@ -324,7 +324,7 @@ Claude Code를 사용하지 않으시나요? [claude.ai](https://claude.ai)에�
 1. 브라우저에서 [claude.ai](https://claude.ai) 열기
 2. 프로필 아이콘 클릭 → **설정** → **프로필**
 3. **"사용자 지정 지침"** (또는 *"Claude가 어떻게 응답하길 원하시나요?"*) 찾기
-4. [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) 내용을 복사하여 붙여넣기 → 저장
+4. [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md) 내용을 복사하여 붙여넣기 → 저장
 
 완료. Claude.ai에서 작성하는 모든 프롬프트는 Claude가 응답하기 전에 동일한 3단계 프로토콜로 자동 재구성됩니다.
 

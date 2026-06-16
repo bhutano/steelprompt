@@ -324,7 +324,7 @@ python --version   # 检查 Python 版本
 1. 在浏览器中打开 [claude.ai](https://claude.ai)
 2. 点击个人头像 → **设置** → **个人资料**
 3. 找到 **"自定义指令"**（或 *"你希望 Claude 如何回复？"*）
-4. 复制 [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) 的内容并粘贴到那里 → 保存
+4. 复制 [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md) 的内容并粘贴到那里 → 保存
 
 完成。你在 Claude.ai 上写的每个提示词都会在 Claude 回复前被同样的三层协议静默重构。
 

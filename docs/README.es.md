@@ -324,7 +324,7 @@ python --version   # verificar versión de Python
 1. Abre [claude.ai](https://claude.ai) en tu navegador
 2. Haz clic en el ícono de perfil → **Configuración** → **Perfil**
 3. Encuentra **"Instrucciones personalizadas"** (o *"¿Cómo te gustaría que Claude respondiera?"*)
-4. Copia el contenido de [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) y pégalo allí → Guardar
+4. Copia el contenido de [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md) y pégalo allí → Guardar
 
 Listo. Cada prompt que escribas en Claude.ai será reestructurado silenciosamente usando el mismo protocolo de 3 niveles antes de que Claude responda.
 

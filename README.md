@@ -330,7 +330,7 @@ Don't use Claude Code? You can get the same prompt engineering framework directl
 1. Open [claude.ai](https://claude.ai) in your browser
 2. Click your profile icon → **Settings** → **Profile**
 3. Find **"Custom instructions"** (or *"How would you like Claude to respond?"*)
-4. Copy the contents of [`prompts/steelprompt-web.md`](prompts/steelprompt-web.md) and paste it there → Save
+4. Open [`prompts/steelprompt-web.md`](https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md) (raw text), select all → copy → paste it there → Save
 
 That's it. Every prompt you write in Claude.ai will be silently restructured using the same 3-tier protocol before Claude responds.
 
