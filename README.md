@@ -14,9 +14,9 @@
 
 ![demo](steel_demo.gif)
 
-**Every prompt you type is silently restructured using Anthropic's 7 official prompt engineering principles before Claude sees it.**
+**Every prompt restructured using Anthropic's 7 official principles — automatically in Claude Code, on demand in Claude.ai.**
 
-✦ Zero setup · ✦ No API keys · ✦ Runs inline · ✦ 4 switchable modes
+✦ No API keys · ✦ Claude Code + Claude.ai web · ✦ Zero added latency · ✦ 4 switchable modes
 
 </div>
 
@@ -24,15 +24,20 @@
 
 ## The problem
 
-Claude Code is only as good as the prompts you give it. Most prompts are missing role assignment, structured context, explicit constraints, output format specification, and examples — all things Anthropic's own guidelines say dramatically improve response quality.
+Claude is only as good as the prompts you give it. Most prompts are missing role assignment, structured context, explicit constraints, output format specification, and examples — all things Anthropic's own guidelines say dramatically improve response quality.
 
-You could spend 10 minutes engineering every prompt manually. Or install steelprompt.
+You could spend 10 minutes engineering every prompt manually. Or use steelprompt — automatic in Claude Code, on demand in Claude.ai.
 
 ---
 
 ## How it works
 
-steelprompt intercepts every prompt via a `UserPromptSubmit` hook and applies a 3-tier decision protocol before Claude processes it:
+steelprompt runs on two surfaces:
+
+- **Claude Code (CLI)** — a `UserPromptSubmit` hook intercepts every prompt automatically before Claude processes it.
+- **Claude.ai (web)** — paste `prompts/steelprompt-web.md` into Custom Instructions once, then use `/sp "prompt"` to engineer any prompt on demand.
+
+In both cases, the same 3-tier decision protocol applies:
 
 ```
 Your prompt

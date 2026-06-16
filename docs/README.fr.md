@@ -1,4 +1,4 @@
-<picture>
+﻿<picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/banner-dark.svg">
   <img src="../assets/banner-light.svg" alt="steelprompt" width="100%">
 </picture>
@@ -16,7 +16,7 @@
 
 **Chaque prompt que vous saisissez est silencieusement restructuré selon les 7 principes officiels de prompt engineering d'Anthropic, avant que Claude ne le voie.**
 
-✦ Zéro configuration · ✦ Aucune clé API · ✦ Exécution inline · ✦ 4 modes commutables
+✦ Aucune clé API · ✦ Claude Code + Claude.ai web · ✦ Zéro latence supplémentaire · ✦ 4 modes commutables
 
 </div>
 
@@ -26,13 +26,18 @@
 
 Claude Code n'est efficace qu'à la hauteur des prompts que vous lui donnez. La plupart des prompts sont dépourvus d'attribution de rôle, de contexte structuré, de contraintes explicites, de spécification du format de sortie et d'exemples — autant d'éléments que les directives officielles d'Anthropic indiquent comme déterminants pour la qualité des réponses.
 
-Vous pourriez passer 10 minutes à peaufiner chaque prompt manuellement. Ou installer steelprompt.
+Vous pourriez passer 10 minutes à peaufiner chaque prompt manuellement. Ou utiliser steelprompt — automatique dans Claude Code, à la demande dans Claude.ai.
 
 ---
 
 ## Comment ça fonctionne
 
-steelprompt intercepte chaque prompt via un hook `UserPromptSubmit` et applique un protocole de décision à 3 niveaux avant que Claude ne le traite :
+steelprompt fonctionne sur deux surfaces :
+
+- **Claude Code (CLI)** — un hook `UserPromptSubmit` intercepte chaque prompt automatiquement avant que Claude ne le traite.
+- **Claude.ai (web)** — collez `prompts/steelprompt-web.md` dans les Instructions personnalisées une seule fois, puis utilisez `/sp "prompt"` pour optimiser n’importe quel prompt à la demande.
+
+Dans les deux cas, le même protocole de décision à 3 niveaux s’applique :
 
 ```
 Votre prompt
@@ -308,6 +313,24 @@ claude plugin install steelprompt
 claude --version   # vérifier la version de Claude Code
 python --version   # vérifier la version de Python
 ```
+
+---
+
+## Utiliser sur Claude.ai (web)
+
+Vous n’utilisez pas Claude Code ? Vous pouvez obtenir le même framework d’ingénierie de prompts directement sur [claude.ai](https://claude.ai) — sans installation, sans CLI.
+
+**Configuration (une seule fois) :**
+1. Ouvrez [claude.ai](https://claude.ai) dans votre navigateur
+2. Cliquez sur l’icône de profil → **Paramètres** → **Profil**
+3. Trouvez **« Instructions personnalisées »** (ou *« Comment souhaitez-vous que Claude réponde ? »*)
+4. Copiez le contenu de [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) et collez-le là → Enregistrer
+
+C’est tout. Chaque prompt que vous écrivez dans Claude.ai sera silencieusement restructuré selon le même protocole à 3 niveaux avant que Claude ne réponde.
+
+**Déclencheur manuel :** `/sp "votre prompt"` · **Mode aperçu :** `/sp mode preview`
+
+> La version web n’a pas de hooks ni d’appels d’outils — elle fonctionne comme un system prompt dans les instructions personnalisées natives de Claude.ai.
 
 ---
 

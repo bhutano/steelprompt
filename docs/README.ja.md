@@ -1,4 +1,4 @@
-<picture>
+﻿<picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/banner-dark.svg">
   <img src="../assets/banner-light.svg" alt="steelprompt" width="100%">
 </picture>
@@ -14,9 +14,9 @@
 
 ![demo](../steel_demo.gif)
 
-**あなたが入力するすべてのプロンプトは、Claude が処理する前に Anthropic の7つの公式プロンプトエンジニアリング原則に基づいて自動的に再構成されます。**
+**すべてのプロンプトを Anthropic の7つの公式原則で再構成 — Claude Code では自動的に、Claude.ai ではオンデマンドで。**
 
-✦ セットアップ不要 · ✦ APIキー不要 · ✦ インライン実行 · ✦ 4つの切替可能なモード
+✦ APIキー不要 · ✦ Claude Code + Claude.ai ウェブ · ✦ 追加レイテンシなし · ✦ 4つの切替可能なモード
 
 </div>
 
@@ -24,15 +24,20 @@
 
 ## 問題
 
-Claude Code の出力品質は、与えるプロンプトの質に依存します。多くのプロンプトには、ロールの割り当て、構造化されたコンテキスト、明示的な制約、出力フォーマットの指定、そして例示が欠けています——これらはすべて Anthropic 自身のガイドラインが応答品質を大幅に向上させると言っているものです。
+Claude の出力品質は、与えるプロンプトの質に依存します。多くのプロンプトには、ロールの割り当て、構造化されたコンテキスト、明示的な制約、出力フォーマットの指定、そして例示が欠けています——これらはすべて Anthropic 自身のガイドラインが応答品質を大幅に向上させると言っているものです。
 
-毎回のプロンプトを手動でエンジニアリングするのに10分費やすこともできます。あるいは steelprompt をインストールすることもできます。
+毎回のプロンプトを手動でエンジニアリングするのに10分費やすこともできます。あるいは steelprompt を使うこともできます — Claude Code では自動的に、Claude.ai ではオンデマンドで。
 
 ---
 
 ## 仕組み
 
-steelprompt は `UserPromptSubmit` フックを通じてすべてのプロンプトを傍受し、Claude が処理する前に3段階の判定プロトコルを適用します：
+steelprompt は2つのサーフェスで動作します：
+
+- **Claude Code (CLI)** — `UserPromptSubmit` フックが Claude の処理前にすべてのプロンプトを自動的に傍受します。
+- **Claude.ai（ウェブ）** — `prompts/steelprompt-web.md` をカスタム指示に一度貼り付けるだけで、あとは `/sp "プロンプト"` でオンデマンドにエンジニアリングできます。
+
+どちらの場合も、同じ 3 段階の判定プロトコルが適用されます：
 
 ```
 あなたのプロンプト
@@ -308,6 +313,24 @@ claude plugin install steelprompt
 claude --version   # Claude Code のバージョンを確認
 python --version   # Python のバージョンを確認
 ```
+
+---
+
+## Claude.ai（Web版）で使用する
+
+Claude Codeを使わない方でも、[claude.ai](https://claude.ai)で同じプロンプトエンジニアリングフレームワークを利用できます — インストール不要、CLI不要。
+
+**設定（一度だけ）：**
+1. ブラウザで[claude.ai](https://claude.ai)を開く
+2. プロフィールアイコン → **設定** → **プロフィール** をクリック
+3. **「カスタム指示」**（または*「Claudeにどのように応答してほしいですか？」*）を探す
+4. [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md)の内容をコピーして貼り付け → 保存
+
+以上です。Claude.aiで入力するすべてのプロンプトは、Claudeが応答する前に同じ 3 層プロトコルで自動的に再構成されます。
+
+**手動トリガー：** `/sp "プロンプト"` · **プレビューモード：** `/sp mode preview`
+
+> Web版にはフックもツール呼び出しもありません — Claude.aiのネイティブカスタム指示内でシステムプロンプトとして動作します。
 
 ---
 

@@ -1,4 +1,4 @@
-<picture>
+﻿<picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/banner-dark.svg">
   <img src="../assets/banner-light.svg" alt="steelprompt" width="100%">
 </picture>
@@ -14,9 +14,9 @@
 
 ![demo](../steel_demo.gif)
 
-**입력하는 모든 프롬프트는 Claude가 보기 전에 Anthropic의 7가지 공식 프롬프트 엔지니어링 원칙에 따라 자동으로 재구성됩니다.**
+**모든 프롬프트를 Anthropic의 7가지 공식 원칙으로 재구성 — Claude Code에서는 자동으로이고서 Claude.ai에서는 필요할 때.**
 
-✦ 설정 불필요 · ✦ API 키 불필요 · ✦ 인라인 실행 · ✦ 4가지 전환 가능한 모드
+✦ API 키 불필요 · ✦ Claude Code + Claude.ai 웹 · ✦ 추가 지연 없음 · ✦ 4가지 전환 가능한 모드
 
 </div>
 
@@ -24,15 +24,20 @@
 
 ## 문제
 
-Claude Code의 효과는 주어진 프롬프트의 품질에 달려 있습니다. 대부분의 프롬프트에는 역할 지정, 구조화된 맥락, 명시적 제약 조건, 출력 형식 사양, 예시가 빠져 있습니다 — 이 모두는 Anthropic의 공식 가이드라인이 응답 품질을 크게 향상시킨다고 명시한 요소들입니다.
+Claude의 효과는 주어진 프롬프트의 품질에 달려 있습니다. 대부분의 프롬프트에는 역할 지정, 구조화된 맥락, 명시적 제약 조건, 출력 형식 사양, 예시가 빠져 있습니다 — 이 모두는 Anthropic의 공식 가이드라인이 응답 품질을 크게 향상시킨다고 명시한 요소들입니다.
 
-매 프롬프트를 수동으로 10분씩 엔지니어링하거나, steelprompt를 설치하면 됩니다.
+매 프롬프트를 수동으로 10분씩 엔지니어링하거나, steelprompt를 사용하면 됩니다 — Claude Code에서는 자동으로이고서 Claude.ai에서는 필요할 때.
 
 ---
 
 ## 작동 방식
 
-steelprompt는 `UserPromptSubmit` 훅을 통해 모든 프롬프트를 가로채고, Claude가 처리하기 전에 3단계 결정 프로토콜을 적용합니다:
+steelprompt은 두 가지 환경에서 작동합니다:
+
+- **Claude Code (CLI)** — `UserPromptSubmit` 훅이 Claude가 처리하기 전에 모든 프롬프트를 자동으로 가로책니다.
+- **Claude.ai (웹)** — `prompts/steelprompt-web.md`를 사용자 지정 지침에 한 번 붙여넣은 후, `/sp "프롬프트"`를 사용하여 필요할 때 프롬프트를 엔지니어링하세요.
+
+두 경우 모두 동일한 3단계 결정 프로토콜이 적용됩니다:
 
 ```
 입력한 프롬프트
@@ -308,6 +313,24 @@ claude plugin install steelprompt
 claude --version   # Claude Code 버전 확인
 python --version   # Python 버전 확인
 ```
+
+---
+
+## Claude.ai (웹)에서 사용하기
+
+Claude Code를 사용하지 않으시나요? [claude.ai](https://claude.ai)에서 바로 동일한 프롬프트 엔지니어링 프레임워크를 사용할 수 있습니다 — 설치 불필요, CLI 불필요.
+
+**설정 (한 번만):**
+1. 브라우저에서 [claude.ai](https://claude.ai) 열기
+2. 프로필 아이콘 클릭 → **설정** → **프로필**
+3. **"사용자 지정 지침"** (또는 *"Claude가 어떻게 응답하길 원하시나요?"*) 찾기
+4. [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) 내용을 복사하여 붙여넣기 → 저장
+
+완료. Claude.ai에서 작성하는 모든 프롬프트는 Claude가 응답하기 전에 동일한 3단계 프로토콜로 자동 재구성됩니다.
+
+**수동 트리거:** `/sp "프롬프트"` · **미리보기 모드:** `/sp mode preview`
+
+> 웹 버전에는 훅이나 도구 호출이 없습니다 — Claude.ai의 네이티브 사용자 지정 지침 내에서 시스템 프롬프트로 실행됩니다.
 
 ---
 

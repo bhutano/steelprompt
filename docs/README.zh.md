@@ -1,4 +1,4 @@
-<picture>
+﻿<picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/banner-dark.svg">
   <img src="../assets/banner-light.svg" alt="steelprompt" width="100%">
 </picture>
@@ -14,9 +14,9 @@
 
 ![demo](../steel_demo.gif)
 
-**你输入的每个提示都会被自动按照 Anthropic 的 7 个官方提示工程原则重新结构化，然后才会被 Claude 看到。**
+**每个提示词按 Anthropic 7 条官方原则重构 — 在 Claude Code 中自动执行，在 Claude.ai 中按需触发。**
 
-✦ 零配置 · ✦ 无需 API 密钥 · ✦ 内联运行 · ✦ 4 种可切换的模式
+✦ 无需 API 密钥 · ✦ Claude Code + Claude.ai 网页版 · ✦ 零额外延迟 · ✦ 4 种可切换的模式
 
 </div>
 
@@ -24,15 +24,20 @@
 
 ## 问题
 
-Claude Code 的效果取决于你给它的提示有多好。大多数提示缺少角色分配、结构化上下文、显式约束、输出格式规范和示例——这些都是 Anthropic 自己的指南说能显著提高响应质量的东西。
+Claude 的效果取决于你给它的提示有多好。大多数提示缺少角色分配、结构化上下文、显式约束、输出格式规范和示例——这些都是 Anthropic 自己的指南说能显著提高响应质量的东西。
 
-你可以花 10 分钟手动优化每个提示。或者安装 steelprompt。
+你可以花 10 分钟手动优化每个提示。或者使用 steelprompt — 在 Claude Code 中自动运行，在 Claude.ai 中按需使用。
 
 ---
 
 ## 工作原理
 
-steelprompt 通过 `UserPromptSubmit` 钩子拦截每个提示，并在 Claude 处理之前应用一个 3 级决策协议：
+steelprompt 在两个平台上运行：
+
+- **Claude Code (CLI)** — `UserPromptSubmit` 钩子在 Claude 处理前自动拦截每个提示词。
+- **Claude.ai（网页版）** — 将 `prompts/steelprompt-web.md` 粘贴到自定义指令中一次，然后使用 `/sp "提示词"` 按需工程化任意提示词。
+
+两种方式都应用相同的 3 级决策协议：
 
 ```
 你的提示
@@ -308,6 +313,24 @@ claude plugin install steelprompt
 claude --version   # 检查 Claude Code 版本
 python --version   # 检查 Python 版本
 ```
+
+---
+
+## 在 Claude.ai（网页版）上使用
+
+不用 Claude Code？你可以直接在 [claude.ai](https://claude.ai) 上获得同样的提示词工程框架 — 无需安装，无需 CLI。
+
+**设置（一次即可）：**
+1. 在浏览器中打开 [claude.ai](https://claude.ai)
+2. 点击个人头像 → **设置** → **个人资料**
+3. 找到 **"自定义指令"**（或 *"你希望 Claude 如何回复？"*）
+4. 复制 [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) 的内容并粘贴到那里 → 保存
+
+完成。你在 Claude.ai 上写的每个提示词都会在 Claude 回复前被同样的三层协议静默重构。
+
+**手动触发：** `/sp "你的提示词"` · **预览模式：** `/sp mode preview`
+
+> 网页版没有钉子或工具调用 — 它作为系统提示词在 Claude.ai 的原生自定义指令中运行。
 
 ---
 

@@ -1,4 +1,4 @@
-<picture>
+﻿<picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/banner-dark.svg">
   <img src="../assets/banner-light.svg" alt="steelprompt" width="100%">
 </picture>
@@ -14,9 +14,9 @@
 
 ![demo](../steel_demo.gif)
 
-**Jeder Prompt, den du eingibst, wird still nach Anthropics 7 offiziellen Prompt-Engineering-Prinzipien umstrukturiert, bevor Claude ihn sieht.**
+**Jeder Prompt nach Anthropics 7 offiziellen Prinzipien umstrukturiert — automatisch in Claude Code, auf Abruf in Claude.ai.**
 
-✦ Kein Setup · ✦ Keine API-Schlüssel · ✦ Läuft inline · ✦ 4 wechselbare Modi
+✦ Keine API-Schlüssel · ✦ Claude Code + Claude.ai Web · ✦ Keine zusätzliche Latenz · ✦ 4 wechselbare Modi
 
 </div>
 
@@ -24,15 +24,20 @@
 
 ## Das Problem
 
-Claude Code ist nur so gut wie die Prompts, die du ihm gibst. Den meisten Prompts fehlen Rollenzuweisung, strukturierter Kontext, explizite Einschränkungen, Ausgabeformat-Spezifikation und Beispiele — all das, was Anthropics eigene Richtlinien als entscheidend für die Antwortqualität bezeichnen.
+Claude ist nur so gut wie die Prompts, die du ihm gibst. Den meisten Prompts fehlen Rollenzuweisung, strukturierter Kontext, explizite Einschränkungen, Ausgabeformat-Spezifikation und Beispiele — all das, was Anthropics eigene Richtlinien als entscheidend für die Antwortqualität bezeichnen.
 
-Du könntest 10 Minuten damit verbringen, jeden Prompt manuell zu optimieren. Oder steelprompt installieren.
+Du könntest 10 Minuten damit verbringen, jeden Prompt manuell zu optimieren. Oder steelprompt verwenden — automatisch in Claude Code, auf Abruf in Claude.ai.
 
 ---
 
 ## Wie es funktioniert
 
-steelprompt fängt jeden Prompt über einen `UserPromptSubmit`-Hook ab und wendet ein 3-stufiges Entscheidungsprotokoll an, bevor Claude ihn verarbeitet:
+steelprompt läuft auf zwei Oberflächen:
+
+- **Claude Code (CLI)** — ein `UserPromptSubmit`-Hook fängt jeden Prompt automatisch ab, bevor Claude ihn verarbeitet.
+- **Claude.ai (Web)** — füge `prompts/steelprompt-web.md` einmalig in die benutzerdefinierten Anweisungen ein und verwende dann `/sp "Prompt"` um jeden Prompt auf Abruf zu optimieren.
+
+In beiden Fällen gilt dasselbe 3-Stufen-Entscheidungsprotokoll:
 
 ```
 Dein Prompt
@@ -308,6 +313,24 @@ claude plugin install steelprompt
 claude --version   # Claude Code Version prüfen
 python --version   # Python Version prüfen
 ```
+
+---
+
+## Auf Claude.ai (Web) verwenden
+
+Kein Claude Code? Das gleiche Prompt-Engineering-Framework steht dir direkt auf [claude.ai](https://claude.ai) zur Verfügung — keine Installation, keine CLI.
+
+**Einrichtung (einmalig):**
+1. Öffne [claude.ai](https://claude.ai) im Browser
+2. Klicke auf das Profilsymbol → **Einstellungen** → **Profil**
+3. Finde **„Benutzerdefinierte Anweisungen“** (oder *„Wie soll Claude antworten?“*)
+4. Kopiere den Inhalt von [`prompts/steelprompt-web.md`](../prompts/steelprompt-web.md) und füge ihn dort ein → Speichern
+
+Das war’s. Jeder Prompt, den du in Claude.ai eingibst, wird mit demselben 3-Stufen-Protokoll still umstrukturiert, bevor Claude antwortet.
+
+**Manueller Auslöser:** `/sp "dein Prompt"` · **Vorschaumodus:** `/sp mode preview`
+
+> Die Web-Version hat keine Hooks oder Tool-Aufrufe — sie läuft als System-Prompt in den nativen benutzerdefinierten Anweisungen von Claude.ai.
 
 ---
 
