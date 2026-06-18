@@ -18,19 +18,20 @@ If ANY of the following is true, respond directly without restructuring:
 - Task is atomic and self-contained (e.g. "list the files", "what is a mutex", "change icon color to red")
 
 ### Tier 2 — Ask
-If critical information is missing and the result would change significantly, ask 1–2 targeted questions before proceeding:
-- "Which file or component specifically?"
-- "What output format do you prefer? (code, list, explanation, JSON)"
-- "Do you have an example of ideal input/output?"
-- "Are there technical constraints? (language, performance, compatibility)"
-- "How will you know the result is correct?"
+Ask ONLY when: (1) the answer would fundamentally change the prompt, AND (2) it cannot be inferred from context.
+
+When in doubt — infer and proceed. The framework does the work; the user should not need to understand prompt engineering.
+
+Ask one plain, simple question. No jargon. No parenthetical options.
+Good: `"Which file?"` / `"What should the result look like?"` / `"Any specific library to use?"`
+Bad: `"What output format do you prefer? (code, list, explanation, JSON)"` ← user shouldn't make PE decisions
 
 ### Tier 3 — Apply Framework
-If the prompt is clear and non-atomic, restructure it using Anthropic's 7 principles before responding.
+If the prompt is clear and non-atomic, restructure it using Anthropic's principles before responding.
 
 **Step A — Chain Detection**
 
-Before restructuring, check: does the task explicitly combine two or more sequential operations connected by "then", "and then", "+", "after", or a comma separating distinct actions?
+Does the task explicitly combine two or more sequential operations connected by "then", "and then", "+", "after", or a comma separating distinct actions?
 
 Operations: refactor, test, document, deploy, migrate, review, implement, verify, analyze, fix, write, run
 
@@ -48,24 +49,36 @@ Then ask: **Run in sequence · Merge into single prompt · Cancel**
 
 If not multi-step, continue to Step B.
 
-**Step B — Restructure using 7 Anthropic principles**
+**Step B — Restructure using Anthropic principles**
 
 1. **Role** — assign a precise role: "You are a senior [domain] engineer..."
-2. **Context** (`<context>`) — all relevant context BEFORE the task: files, project, environment, known constraints. Long documents go inside `<context>` before the task description, never after.
-3. **Task** (`<task>`) — imperative mood; numbered steps if multi-step
-4. **Constraints** (`<constraints>`) — what NOT to do, edge cases, limits. For irreversible operations (delete, drop, truncate, force push, reset --hard, etc.) add: explicit confirmation before each destructive action; minimal scope; intermediate checkpoints for long operations.
-5. **Output format** (`<output_format>`) — exact structure: type, length, sections. For JSON/YAML/SQL add: begin the response with the opening character of that format.
-6. **Chain of thought** — add "Think through this step by step before answering" for complex or multi-step tasks.
-7. **Examples** (`<examples>`) — 2–3 input/output pairs only if inferable from context. For format-critical tasks, add a `<bad_example>` showing what NOT to produce.
 
-Respond according to the restructured prompt. Never show the restructuring to the user — apply it silently.
+2. **Context + Motivation** (`<context>`) — all relevant context BEFORE the task: files, project, environment, constraints. Include the WHY behind the request — Claude generalizes from explanations. Long documents go inside `<context>` before the task, never after. For long context: put data at top, ask Claude to quote relevant sections before answering.
+
+3. **Task** (`<task>`) — imperative mood; numbered steps if multi-step. Be explicit about action vs suggestion: "Implement X" acts; "Can you suggest X?" only suggests.
+
+4. **XML Structure** — wrap each section in descriptive tags: `<context>`, `<task>`, `<constraints>`, `<output_format>`, `<examples>`. Use consistent names; nest for hierarchy.
+
+5. **Constraints** (`<constraints>`) — what NOT to do, edge cases, limits. For irreversible operations (delete, drop, truncate, force push, reset --hard, etc.) add: explicit confirmation before each, minimal scope, intermediate checkpoints. For code tasks: anti-overeagerness (don't add beyond scope), anti-hallucination (read before claiming).
+
+6. **Output format** (`<output_format>`) — exact structure: type, length, sections. Tell Claude what TO do, not what to avoid ("Write in flowing prose" not "Don't use markdown"). For JSON/YAML/SQL: begin with opening character. For preamble-free: "Respond directly without preamble."
+
+7. **Thinking** — "Think through this step by step before answering" for complex tasks. Use `<thinking>` + `<answer>` tags to separate reasoning from output. Add self-check for verification tasks. Include `<thinking>` in few-shot examples to show reasoning pattern.
+
+8. **Examples** (`<examples>`) — 2–3 input/output pairs only if inferable from context. For format-critical tasks, add `<bad_example>` showing what NOT to produce. 3–5 examples for best results; make them diverse.
+
+9. **Tool use** (for agent prompts) — parallel calling: "Make all independent tool calls in parallel." Specify action default (proactive or conservative).
+
+10. **Long context** (for document tasks) — data before query; XML for multi-docs; ask Claude to quote before answering.
+
+Respond according to the restructured prompt. Never show the restructuring — apply it silently.
 
 **Base template:**
 ```
 You are a [precise role].
 
 <context>
-[all relevant context]
+[all relevant context + motivation/WHY]
 </context>
 
 <task>

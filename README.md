@@ -14,7 +14,7 @@
 
 ![demo](steel_demo.gif)
 
-**Every prompt restructured using Anthropic's 7 official principles — automatically in Claude Code, on demand in Claude.ai.**
+**Every prompt restructured using Anthropic's 10 official principles — automatically in Claude Code, on demand in Claude.ai.**
 
 ✦ No API keys · ✦ Claude Code + Claude.ai web · ✦ Zero added latency · ✦ 4 switchable modes
 
@@ -59,7 +59,7 @@ Your prompt
     ▼
 ┌─────────────────────────────────────────────────┐
 │  TIER 3 — APPLY FRAMEWORK           ← default   │
-│  Restructure using 7 Anthropic principles       │
+│  Restructure using 10 Anthropic principles      │
 │  silently, before Claude responds               │
 └─────────────────────────────────────────────────┘
 ```
@@ -124,7 +124,7 @@ Think through this step by step before answering.
 
 ## Advanced Patterns
 
-steelprompt extends the 7 core principles with 5 context-specific patterns from the full Anthropic documentation — applied automatically when the prompt signals them:
+steelprompt extends the core framework with context-specific patterns from the full Anthropic documentation — applied automatically when the prompt signals them:
 
 ### Chain detection
 
@@ -169,16 +169,6 @@ delete all obsolete records from the production database
 
 ---
 
-### Long context ordering
-
-When the task references long files or documents, steelprompt moves them **before** the task description inside `<context>` — matching Anthropic's guideline that long data should precede the query.
-
-| Without steelprompt | With steelprompt |
-|---|---|
-| `<task>` first, then file content | file content inside `<context>` first, then `<task>` |
-
----
-
 ### Prefill for critical formats
 
 When the output format is rigidly critical (JSON, YAML, SQL), steelprompt adds a prefill anchor: begin the response with the opening character (`{`, `---`, `SELECT`) to lock Claude into the correct format from the first token.
@@ -205,6 +195,84 @@ Input: user object → Output: {id, name, email, password_hash} ← never expose
 
 ---
 
+### Motivation / WHY
+
+Claude generalizes from explanations — steelprompt adds the reason behind a request, not just the request itself. A constraint with a WHY sticks better than a bare rule.
+
+| Without steelprompt | With steelprompt |
+|---|---|
+| `NEVER use ellipses` | `Never use ellipses — the text-to-speech engine can't pronounce them` |
+| `Keep responses short` | `Keep responses under 3 sentences — output is rendered in a mobile tooltip with limited space` |
+
+---
+
+### Format control (positive framing)
+
+When an output format is specified, steelprompt tells Claude what TO produce — not what to avoid. Positive instructions are more reliable than negative ones.
+
+```
+You type: "answer in plain text, no markdown"
+steelprompt adds to <output_format>: Write in smoothly flowing prose paragraphs.
+                                     No headers, bullets, or code blocks.
+```
+
+For preamble-free output:
+```
+steelprompt adds: Respond directly without preamble.
+                  Do not start with 'Here is...', 'Based on...', etc.
+```
+
+---
+
+### Tool use & parallel calling
+
+When a prompt is for an agent or system with tools, steelprompt injects parallel execution and action-default guidance.
+
+**You type:**
+```
+build an agent that searches our docs, reads the top 3 results, and summarizes them
+```
+
+**steelprompt adds to `<constraints>`:**
+```
+Make all independent tool calls in parallel — search + read all 3 results simultaneously.
+Never use placeholders or guess missing parameters.
+By default, implement changes rather than only suggesting them.
+```
+
+---
+
+### Thinking & self-check
+
+For tasks that require multi-step reasoning or verification, steelprompt adds structured thinking and a self-check instruction.
+
+```
+You type: "calculate the optimal batch size for our embedding pipeline"
+
+steelprompt adds:
+  Reason through the problem in <thinking> tags.
+  Consider: throughput, memory, API rate limits, cost per token.
+  Then provide your answer in <answer> tags.
+  Before finishing, verify your recommendation satisfies all constraints above.
+```
+
+---
+
+### Long context ordering
+
+When the task references long files or documents, steelprompt moves them **before** the task description inside `<context>` — matching Anthropic's guideline that long data should precede the query (up to 30% accuracy gain on complex inputs).
+
+```
+steelprompt also adds: Quote the relevant sections before answering.
+```
+
+| Without steelprompt | With steelprompt |
+|---|---|
+| `<task>` first, then file content | file content inside `<context>` first, then `<task>` |
+| Query before evidence | Evidence before query |
+
+---
+
 ## Tier 2 in action
 
 When critical information is missing, steelprompt asks before guessing.
@@ -222,7 +290,7 @@ When critical information is missing, steelprompt asks before guessing.
 
 | Mode | Behavior |
 |---|---|
-| `full` (default) | 3-tier protocol active: bypass → ask → apply 7 Anthropic principles |
+| `full` (default) | 3-tier protocol active: bypass → ask → apply 10 Anthropic principles |
 | `preview` | Shows the engineered prompt before executing — review, edit, or cancel |
 | `ask-only` | Asks clarifying questions only; does not apply the full framework |
 | `off` | Hook completely disabled |
@@ -353,21 +421,24 @@ steelprompt never intercepts these:
 
 ---
 
-## The 7 Anthropic principles
+## The 10 Anthropic principles
 
 steelprompt applies these to every non-bypassed, clear prompt:
 
 | # | Principle | Applied as |
 |---|---|---|
 | 1 | **Role** | `You are a senior [domain] engineer...` |
-| 2 | **Context** | `<context>` — all relevant background before the task; long files/docs placed inside `<context>` **before** the task description |
-| 3 | **Task** | `<task>` — imperative mood, numbered steps for multi-step work |
-| 4 | **Constraints** | `<constraints>` — what NOT to do, limits, style rules; agentic safety constraints auto-injected for destructive ops |
-| 5 | **Output format** | `<output_format>` — exact structure, length, sections; prefill character anchored for JSON/YAML/SQL |
-| 6 | **Chain of thought** | `Think through this step by step before answering` |
-| 7 | **Examples** | `<examples>` — input/output pairs; `<bad_example>` added for ambiguous tasks to show what NOT to produce |
+| 2 | **Context + Motivation** | `<context>` — all relevant background before the task, including the WHY behind the request; long files/docs placed **before** the task description |
+| 3 | **Task** | `<task>` — imperative mood, numbered steps; explicit about action vs. suggestion |
+| 4 | **XML Structure** | Every section wrapped in descriptive tags (`<context>`, `<task>`, `<constraints>`, `<output_format>`, `<examples>`) for unambiguous parsing |
+| 5 | **Constraints** | `<constraints>` — what NOT to do, limits, style rules; agentic safety constraints auto-injected for destructive ops; anti-overeagerness and anti-hallucination for code tasks |
+| 6 | **Output format** | `<output_format>` — positive framing (tell what TO produce); exact structure, length, sections; prefill character for JSON/YAML/SQL; LaTeX and preamble control |
+| 7 | **Thinking** | `Think through this step by step` + `<thinking>/<answer>` tags for complex tasks; self-check instruction; `<thinking>` in few-shot examples for agents |
+| 8 | **Examples** | `<examples>` — input/output pairs; `<bad_example>` added for ambiguous tasks to show what NOT to produce; 3–5 diverse examples for best results |
+| 9 | **Tool use** | Parallel tool calling instruction; proactive vs. conservative action default; for prompts targeting agents or systems with tools |
+| 10 | **Long context** | Data placed before query; multi-document XML wrapping; quote-before-answer instruction; for prompts referencing large files or documents |
 
-Source: [Anthropic Prompt Engineering Docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+Source: [Anthropic Prompting Best Practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
 
 ---
 
