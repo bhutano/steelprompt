@@ -4,6 +4,15 @@ All notable changes to steelprompt are documented here.
 
 ---
 
+## [0.3.1] — 2026-06-19
+
+### Added
+- **Preview mode translation**: engineered prompt displayed in the user's language; Run always executes the English version
+- **Multilingual chain detection**: sequential connectors now recognized in 9 languages (EN, IT, FR, DE, ES, PT, JA, KO, ZH)
+- **Single-key shortcuts** (web): type `r`/`e`/`c` or `1`/`2`/`3` instead of full words in preview mode
+
+---
+
 ## [0.3.0] — 2026-06-19
 
 ### Added
