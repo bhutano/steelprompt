@@ -31,7 +31,18 @@ If the prompt is clear and non-atomic, restructure it using Anthropic's principl
 
 **Step A — Chain Detection**
 
-Does the task explicitly combine two or more sequential operations connected by "then", "and then", "+", "after", or a comma separating distinct actions?
+Does the task explicitly combine two or more sequential operations connected by a sequential connector or a comma separating distinct actions?
+
+Sequential connectors by language:
+- EN: "then", "and then", "+", "after"
+- IT: "poi", "e poi", "dopo"
+- FR: "puis", "et puis", "après"
+- DE: "dann", "danach"
+- ES: "luego", "después"
+- PT: "depois", "em seguida"
+- JA: "そして", "その後"
+- KO: "그리고", "그런 다음"
+- ZH: "然后", "之后"
 
 Operations: refactor, test, document, deploy, migrate, review, implement, verify, analyze, fix, write, run
 

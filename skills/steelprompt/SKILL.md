@@ -53,7 +53,19 @@ Bad: `"What output format do you prefer? (code, list, explanation, JSON)"` — t
 
 ### Chain detection
 
-Before rewriting: does the task explicitly combine two or more sequential operations, connected by "then", "and then", "+", "after", or a comma joining separate actions?
+Before rewriting: does the task explicitly combine two or more sequential operations, connected by a sequential connector or a comma joining separate actions?
+
+Sequential connectors by language:
+- EN: "then", "and then", "+", "after"
+- IT: "poi", "e poi", "dopo"
+- FR: "puis", "et puis", "après"
+- DE: "dann", "danach"
+- ES: "luego", "después"
+- PT: "depois", "em seguida"
+- JA: "そして", "その後"
+- KO: "그리고", "그런 다음"
+- ZH: "然后", "之后"
+
 Operations: refactor, test, document, deploy, migrate, review, implement, verify, analyze, fix, write, run
 
 Examples that trigger chain detection: "refactor then test", "implement and document", "analyze + fix + deploy"
