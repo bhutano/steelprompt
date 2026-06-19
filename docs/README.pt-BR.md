@@ -1,4 +1,4 @@
-﻿<picture>
+<picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/banner-dark.svg">
   <img src="../assets/banner-light.svg" alt="steelprompt" width="100%">
 </picture>
@@ -7,14 +7,14 @@
 
 🌐 [English](../README.md) · [中文](README.zh.md) · [Español](README.es.md) · **PT-BR** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Italiano](README.it.md)
 
-[![Version](https://img.shields.io/badge/version-0.2.0-4a9eff?style=flat-square)](https://github.com/bhutano/steelprompt)
+[![Version](https://img.shields.io/badge/version-0.3.0-4a9eff?style=flat-square)](https://github.com/bhutano/steelprompt/releases/tag/v0.3.0)
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](https://github.com/bhutano/steelprompt/blob/master/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)
 
 ![demo](../steel_demo.gif)
 
-**Todo prompt reestruturado usando os 7 princípios oficiais da Anthropic — automaticamente no Claude Code, sob demanda no Claude.ai.**
+**Todo prompt reestruturado usando os 10 princípios oficiais da Anthropic — automaticamente no Claude Code, sob demanda no Claude.ai.**
 
 ✦ Sem API keys · ✦ Claude Code + Claude.ai web · ✦ Zero latência adicional · ✦ 4 modos alternáveis
 
@@ -60,7 +60,7 @@ Seu prompt
     ▼
 ┌─────────────────────────────────────────────────┐
 │  NÍVEL 3 — APLICAR FRAMEWORK       ← padrão    │
-│  Reestruturar com 7 princípios Anthropic        │
+│  Reestruturar com 10 princípios Anthropic       │
 │  silenciosamente, antes de Claude responder     │
 └─────────────────────────────────────────────────┘
 ```
@@ -119,7 +119,7 @@ Think through this step by step before answering.
 
 ## Padrões avançados
 
-steelprompt estende os 7 princípios centrais com 5 padrões específicos de contexto da documentação completa da Anthropic — aplicados automaticamente quando o prompt os sinaliza:
+steelprompt estende o framework central com padrões específicos de contexto da documentação completa da Anthropic — aplicados automaticamente quando o prompt os sinaliza:
 
 ### Detecção de cadeia
 
@@ -164,16 +164,6 @@ delete all obsolete records from the production database
 
 ---
 
-### Ordenação de contexto longo
-
-Quando a tarefa referencia arquivos ou documentos longos, steelprompt os move **antes** da descrição da tarefa dentro de `<context>` — seguindo a diretriz da Anthropic de que dados longos devem preceder a consulta.
-
-| Sem steelprompt | Com steelprompt |
-|---|---|
-| `<task>` primeiro, depois o conteúdo do arquivo | conteúdo do arquivo dentro de `<context>` primeiro, depois `<task>` |
-
----
-
 ### Prefill para formatos críticos
 
 Quando o formato de saída é rigidamente crítico (JSON, YAML, SQL), steelprompt adiciona uma âncora de prefill: inicia a resposta com o caractere de abertura (`{`, `---`, `SELECT`) para fixar Claude no formato correto desde o primeiro token.
@@ -200,6 +190,84 @@ Input: user object → Output: {id, name, email, password_hash} ← never expose
 
 ---
 
+### Motivação / POR QUÊ
+
+Claude generaliza a partir de explicações — steelprompt adiciona a razão por trás de uma solicitação, não apenas a solicitação em si. Uma restrição com um POR QUÊ é assimilada melhor do que uma regra isolada.
+
+| Sem steelprompt | Com steelprompt |
+|---|---|
+| `NUNCA use reticências` | `Nunca use reticências — o motor de texto para fala não consegue pronunciá-las` |
+| `Mantenha as respostas curtas` | `Mantenha as respostas em menos de 3 frases — a saída é exibida em um tooltip móvel com espaço limitado` |
+
+---
+
+### Controle de formato (enquadramento positivo)
+
+Quando um formato de saída é especificado, steelprompt diz ao Claude o que PRODUZIR — não o que evitar. Instruções positivas são mais confiáveis do que negativas.
+
+```
+Você digita: "responda em texto simples, sem markdown"
+steelprompt adiciona a <output_format>: Escreva em parágrafos de prosa fluida.
+                                        Sem cabeçalhos, listas ou blocos de código.
+```
+
+Para saída sem preâmbulo:
+```
+steelprompt adiciona: Responda diretamente sem preâmbulo.
+                      Não comece com 'Aqui está...', 'Com base em...', etc.
+```
+
+---
+
+### Uso de ferramentas e chamadas paralelas
+
+Quando um prompt é para um agente ou sistema com ferramentas, steelprompt injeta orientação de execução paralela e padrão de ação.
+
+**Você digita:**
+```
+build an agent that searches our docs, reads the top 3 results, and summarizes them
+```
+
+**steelprompt adiciona a `<constraints>`:**
+```
+Make all independent tool calls in parallel — search + read all 3 results simultaneously.
+Never use placeholders or guess missing parameters.
+By default, implement changes rather than only suggesting them.
+```
+
+---
+
+### Pensamento e autoavaliação
+
+Para tarefas que exigem raciocínio de múltiplos passos ou verificação, steelprompt adiciona pensamento estruturado e uma instrução de autoavaliação.
+
+```
+Você digita: "calculate the optimal batch size for our embedding pipeline"
+
+steelprompt adiciona:
+  Reason through the problem in <thinking> tags.
+  Consider: throughput, memory, API rate limits, cost per token.
+  Then provide your answer in <answer> tags.
+  Before finishing, verify your recommendation satisfies all constraints above.
+```
+
+---
+
+### Ordenação de contexto longo
+
+Quando a tarefa referencia arquivos ou documentos longos, steelprompt os move **antes** da descrição da tarefa dentro de `<context>` — seguindo a diretriz da Anthropic de que dados longos devem preceder a consulta (ganho de até 30% de precisão em entradas complexas).
+
+```
+steelprompt também adiciona: Cite as seções relevantes antes de responder.
+```
+
+| Sem steelprompt | Com steelprompt |
+|---|---|
+| `<task>` primeiro, depois o conteúdo do arquivo | conteúdo do arquivo dentro de `<context>` primeiro, depois `<task>` |
+| Consulta antes da evidência | Evidência antes da consulta |
+
+---
+
 ## Nível 2 em ação
 
 Quando informações críticas estão faltando, steelprompt pergunta antes de adivinhar.
@@ -217,7 +285,7 @@ Quando informações críticas estão faltando, steelprompt pergunta antes de ad
 
 | Modo | Comportamento |
 |---|---|
-| `full` (padrão) | Protocolo de 3 níveis ativo: bypass → perguntar → aplicar 7 princípios Anthropic |
+| `full` (padrão) | Protocolo de 3 níveis ativo: bypass → perguntar → aplicar 10 princípios Anthropic |
 | `preview` | Exibe o prompt engenheirado antes de executar — revisar, editar ou cancelar |
 | `ask-only` | Faz apenas perguntas de esclarecimento; não aplica o framework completo |
 | `off` | Hook completamente desativado |
@@ -319,8 +387,6 @@ python --version   # verificar versão do Python
 
 ## Usar no Claude.ai (web)
 
-## Usar no Claude.ai (web)
-
 Não usa o Claude Code? Você pode obter o mesmo framework de engenharia de prompts diretamente no [claude.ai](https://claude.ai) — sem instalação, sem CLI.
 
 **Configuração (uma única vez):**
@@ -350,21 +416,36 @@ steelprompt nunca intercepta estes:
 
 ---
 
-## Os 7 princípios Anthropic
+## Os 10 princípios Anthropic
 
 steelprompt aplica estes a cada prompt claro e não bypassado:
 
 | # | Princípio | Aplicado como |
 |---|---|---|
 | 1 | **Papel** | `You are a senior [domínio] engineer...` |
-| 2 | **Contexto** | `<context>` — todo o histórico relevante antes da tarefa; arquivos/documentos longos colocados dentro de `<context>` **antes** da descrição da tarefa |
-| 3 | **Tarefa** | `<task>` — modo imperativo, passos numerados para trabalho de múltiplas etapas |
-| 4 | **Restrições** | `<constraints>` — o que NÃO fazer, limites, regras de estilo; restrições de segurança agêntica injetadas automaticamente para operações destrutivas |
-| 5 | **Formato de saída** | `<output_format>` — estrutura exata, tamanho, seções; caractere de prefill ancorado para JSON/YAML/SQL |
-| 6 | **Cadeia de pensamento** | `Think through this step by step before answering` |
-| 7 | **Exemplos** | `<examples>` — pares de entrada/saída; `<bad_example>` adicionado para tarefas ambíguas para mostrar o que NÃO produzir |
+| 2 | **Contexto + Motivação** | `<context>` — todo o histórico relevante antes da tarefa, incluindo o POR QUÊ por trás da solicitação; arquivos/documentos longos colocados **antes** da descrição da tarefa |
+| 3 | **Tarefa** | `<task>` — modo imperativo, passos numerados; explícito sobre ação vs. sugestão |
+| 4 | **Estrutura XML** | Cada seção envolta em tags descritivas (`<context>`, `<task>`, `<constraints>`, `<output_format>`, `<examples>`) para análise sem ambiguidade |
+| 5 | **Restrições** | `<constraints>` — o que NÃO fazer, limites, regras de estilo; restrições de segurança agêntica injetadas automaticamente para operações destrutivas; anti-excesso e anti-alucinação para tarefas de código |
+| 6 | **Formato de saída** | `<output_format>` — enquadramento positivo (dizer o que PRODUZIR); estrutura exata, tamanho, seções; caractere de prefill para JSON/YAML/SQL; controle de LaTeX e preâmbulo |
+| 7 | **Pensamento** | `Think through this step by step` + tags `<thinking>/<answer>` para tarefas complexas; instrução de autoavaliação; `<thinking>` em exemplos few-shot para agentes |
+| 8 | **Exemplos** | `<examples>` — pares de entrada/saída; `<bad_example>` adicionado para tarefas ambíguas para mostrar o que NÃO produzir; 3–5 exemplos diversos para melhores resultados |
+| 9 | **Uso de ferramentas** | Instrução de chamadas paralelas de ferramentas; padrão de ação proativa vs. conservadora; para prompts direcionados a agentes ou sistemas com ferramentas |
+| 10 | **Contexto longo** | Dados colocados antes da consulta; envoltório XML de múltiplos documentos; instrução de citar antes de responder; para prompts que referenciam arquivos ou documentos grandes |
 
-Fonte: [Anthropic Prompt Engineering Docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+Fonte: [Anthropic Prompting Best Practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
+
+---
+
+## Contribuindo
+
+steelprompt melhora quando as pessoas o usam e relatam o que não funciona.
+
+**Encontrou um bug ou comportamento inesperado?** [Abra uma issue](https://github.com/bhutano/steelprompt/issues) — descreva o prompt que você digitou e o que obteve vs. o que esperava.
+
+**Tem uma ideia?** Abra uma issue com o rótulo `enhancement`. Sugestões de novos padrões, melhores exemplos ou casos extremos que o framework não cobre são todos bem-vindos.
+
+**Quer contribuir com código?** Veja [CONTRIBUTING.md](../CONTRIBUTING.md) para as regras básicas e os passos de teste.
 
 ---
 

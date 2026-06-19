@@ -1,4 +1,4 @@
-﻿<picture>
+<picture>
   <source media="(prefers-color-scheme: dark)" srcset="../assets/banner-dark.svg">
   <img src="../assets/banner-light.svg" alt="steelprompt" width="100%">
 </picture>
@@ -7,14 +7,14 @@
 
 🌐 [English](../README.md) · [中文](README.zh.md) · [Español](README.es.md) · [PT-BR](README.pt-BR.md) · [日本語](README.ja.md) · **한국어** · [Deutsch](README.de.md) · [Français](README.fr.md) · [Italiano](README.it.md)
 
-[![Version](https://img.shields.io/badge/version-0.2.0-4a9eff?style=flat-square)](https://github.com/bhutano/steelprompt)
+[![Version](https://img.shields.io/badge/version-0.3.0-4a9eff?style=flat-square)](https://github.com/bhutano/steelprompt/releases/tag/v0.3.0)
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](https://github.com/bhutano/steelprompt/blob/master/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)
 
 ![demo](../steel_demo.gif)
 
-**모든 프롬프트를 Anthropic의 7가지 공식 원칙으로 재구성 — Claude Code에서는 자동으로이고서 Claude.ai에서는 필요할 때.**
+**모든 프롬프트를 Anthropic의 10가지 공식 원칙으로 재구성 — Claude Code에서는 자동으로이고서 Claude.ai에서는 필요할 때.**
 
 ✦ API 키 불필요 · ✦ Claude Code + Claude.ai 웹 · ✦ 추가 지연 없음 · ✦ 4가지 전환 가능한 모드
 
@@ -59,7 +59,7 @@ steelprompt은 두 가지 환경에서 작동합니다:
     ▼
 ┌─────────────────────────────────────────────────┐
 │  단계 3 — 프레임워크 적용       ← 기본값        │
-│  7가지 Anthropic 원칙으로 재구성               │
+│  10가지 Anthropic 원칙으로 재구성              │
 │  Claude가 응답하기 전에 자동으로 처리          │
 └─────────────────────────────────────────────────┘
 ```
@@ -118,7 +118,7 @@ Think through this step by step before answering.
 
 ## 고급 패턴
 
-steelprompt는 전체 Anthropic 문서에서 가져온 5가지 상황별 패턴으로 7가지 핵심 원칙을 확장합니다 — 프롬프트에서 해당 패턴이 감지되면 자동으로 적용됩니다:
+steelprompt는 전체 Anthropic 문서에서 가져온 상황별 패턴으로 코어 프레임워크를 확장합니다 — 프롬프트에서 해당 패턴이 감지되면 자동으로 적용됩니다:
 
 ### 체인 감지
 
@@ -163,16 +163,6 @@ Chain detected (3 prompts):
 
 ---
 
-### 긴 컨텍스트 순서
-
-작업이 긴 파일이나 문서를 참조하는 경우, steelprompt는 그것들을 `<context>` 안의 작업 설명 **앞에** 배치합니다 — 긴 데이터는 쿼리보다 먼저 와야 한다는 Anthropic의 가이드라인에 맞게.
-
-| steelprompt 없이 | steelprompt 사용 시 |
-|---|---|
-| `<task>` 먼저, 그 다음 파일 내용 | 파일 내용이 `<context>` 안에서 먼저, 그 다음 `<task>` |
-
----
-
 ### 중요 형식의 프리필
 
 출력 형식이 엄격하게 중요한 경우(JSON, YAML, SQL), steelprompt는 프리필 앵커를 추가합니다: 첫 번째 토큰부터 Claude를 올바른 형식으로 고정하기 위해 시작 문자(`{`, `---`, `SELECT`)로 응답을 시작합니다.
@@ -199,6 +189,84 @@ Input: user object → Output: {id, name, email, password_hash} ← never expose
 
 ---
 
+### 동기 / WHY
+
+Claude는 설명으로부터 일반화합니다 — steelprompt는 요청 자체뿐만 아니라 요청 뒤에 있는 이유도 추가합니다. WHY가 있는 제약 조건은 단순한 규칙보다 더 잘 작동합니다.
+
+| steelprompt 없이 | steelprompt 사용 시 |
+|---|---|
+| `NEVER use ellipses` | `Never use ellipses — the text-to-speech engine can't pronounce them` |
+| `Keep responses short` | `Keep responses under 3 sentences — output is rendered in a mobile tooltip with limited space` |
+
+---
+
+### 형식 제어 (긍정적 표현)
+
+출력 형식이 지정된 경우, steelprompt는 Claude에게 무엇을 **생성해야 하는지** 알려줍니다 — 피해야 할 것이 아니라. 긍정적 지시는 부정적 지시보다 더 신뢰할 수 있습니다.
+
+```
+입력: "평문으로 답해줘, 마크다운 없이"
+steelprompt가 <output_format>에 추가: 자연스럽게 흐르는 산문 단락으로 작성한다.
+                                      헤더, 목록, 코드 블록 없음.
+```
+
+서문 없는 출력의 경우:
+```
+steelprompt가 추가: 서문 없이 직접 응답한다.
+                    'Here is...', 'Based on...' 등으로 시작하지 않는다.
+```
+
+---
+
+### 도구 사용 및 병렬 호출
+
+프롬프트가 에이전트나 도구가 있는 시스템을 위한 경우, steelprompt는 병렬 실행과 액션 기본값 가이드라인을 주입합니다.
+
+**입력:**
+```
+build an agent that searches our docs, reads the top 3 results, and summarizes them
+```
+
+**steelprompt가 `<constraints>`에 추가합니다:**
+```
+Make all independent tool calls in parallel — search + read all 3 results simultaneously.
+Never use placeholders or guess missing parameters.
+By default, implement changes rather than only suggesting them.
+```
+
+---
+
+### 사고 및 자기 검증
+
+다단계 추론이나 검증이 필요한 작업의 경우, steelprompt는 구조화된 사고와 자기 검증 지시를 추가합니다.
+
+```
+입력: "임베딩 파이프라인의 최적 배치 크기를 계산해줘"
+
+steelprompt가 추가:
+  <thinking> 태그 안에서 문제를 추론한다.
+  고려 사항: 처리량, 메모리, API 속도 제한, 토큰당 비용.
+  그런 다음 <answer> 태그 안에 답변을 제공한다.
+  완료하기 전에 추천 사항이 위의 모든 제약 조건을 만족하는지 확인한다.
+```
+
+---
+
+### 긴 컨텍스트 순서
+
+작업이 긴 파일이나 문서를 참조하는 경우, steelprompt는 그것들을 `<context>` 안의 작업 설명 **앞에** 배치합니다 — 긴 데이터는 쿼리보다 먼저 와야 한다는 Anthropic의 가이드라인(복잡한 입력에서 최대 30% 정확도 향상)에 맞게.
+
+```
+steelprompt가 추가: 답변하기 전에 관련 섹션을 인용한다.
+```
+
+| steelprompt 없이 | steelprompt 사용 시 |
+|---|---|
+| `<task>` 먼저, 그 다음 파일 내용 | 파일 내용이 `<context>` 안에서 먼저, 그 다음 `<task>` |
+| 증거보다 쿼리가 먼저 | 쿼리보다 증거가 먼저 |
+
+---
+
 ## 단계 2 실제 예시
 
 중요한 정보가 누락된 경우, steelprompt는 추측하기 전에 묻습니다.
@@ -216,7 +284,7 @@ Input: user object → Output: {id, name, email, password_hash} ← never expose
 
 | 모드 | 동작 |
 |---|---|
-| `full` (기본값) | 3단계 프로토콜 활성: 우회 → 질문 → 7가지 Anthropic 원칙 적용 |
+| `full` (기본값) | 3단계 프로토콜 활성: 우회 → 질문 → 10가지 Anthropic 원칙 적용 |
 | `preview` | 실행 전 엔지니어링된 프롬프트 표시 — 검토, 편집 또는 취소 |
 | `ask-only` | 명확화 질문만 수행; 전체 프레임워크 적용 안 함 |
 | `off` | 훅 완전히 비활성화 |
@@ -347,21 +415,36 @@ steelprompt는 다음을 절대 가로채지 않습니다:
 
 ---
 
-## 7가지 Anthropic 원칙
+## 10가지 Anthropic 원칙
 
 steelprompt는 우회되지 않은 모든 명확한 프롬프트에 이를 적용합니다:
 
 | # | 원칙 | 적용 방식 |
 |---|---|---|
 | 1 | **역할** | `You are a senior [domain] engineer...` |
-| 2 | **맥락** | `<context>` — 작업 전 모든 관련 배경 정보; 긴 파일/문서는 작업 설명 **앞에** `<context>` 안에 배치 |
-| 3 | **작업** | `<task>` — 명령형 어조, 다단계 작업의 번호 매긴 단계 |
-| 4 | **제약 조건** | `<constraints>` — 하지 말아야 할 것, 한계, 스타일 규칙; 파괴적 작업에는 에이전트 안전 제약이 자동 주입 |
-| 5 | **출력 형식** | `<output_format>` — 정확한 구조, 길이, 섹션; JSON/YAML/SQL의 프리필 문자 앵커 |
-| 6 | **사고 연쇄** | `Think through this step by step before answering` |
-| 7 | **예시** | `<examples>` — 입력/출력 쌍; 모호한 작업에는 생성하지 말아야 할 것을 보여주는 `<bad_example>` 추가 |
+| 2 | **맥락 + 동기** | `<context>` — 작업 전 모든 관련 배경 정보(요청 뒤의 WHY 포함); 긴 파일/문서는 작업 설명 **앞에** 배치 |
+| 3 | **작업** | `<task>` — 명령형 어조, 번호 매긴 단계; 행동과 제안의 명시적 구분 |
+| 4 | **XML 구조** | 모든 섹션을 서술적 태그(`<context>`, `<task>`, `<constraints>`, `<output_format>`, `<examples>`)로 감싸 명확한 파싱 실현 |
+| 5 | **제약 조건** | `<constraints>` — 하지 말아야 할 것, 한계, 스타일 규칙; 파괴적 작업에는 에이전트 안전 제약이 자동 주입; 코드 작업에는 과잉 실행 방지 및 환각 방지 |
+| 6 | **출력 형식** | `<output_format>` — 긍정적 표현(무엇을 생성해야 하는지 알려줌); 정확한 구조, 길이, 섹션; JSON/YAML/SQL의 프리필 문자; LaTeX 및 서문 제어 |
+| 7 | **사고** | `Think through this step by step` + 복잡한 작업에는 `<thinking>/<answer>` 태그; 자기 검증 지시; 에이전트용 few-shot 예시에 `<thinking>` |
+| 8 | **예시** | `<examples>` — 입력/출력 쌍; 모호한 작업에는 생성하지 말아야 할 것을 보여주는 `<bad_example>` 추가; 최선의 결과를 위해 3~5개의 다양한 예시 |
+| 9 | **도구 사용** | 병렬 도구 호출 지시; 적극적 vs. 보수적 행동 기본값; 에이전트나 도구가 있는 시스템을 대상으로 하는 프롬프트용 |
+| 10 | **긴 컨텍스트** | 쿼리 전에 데이터 배치; 다중 문서 XML 래핑; 답변 전 인용 지시; 대용량 파일이나 문서를 참조하는 프롬프트용 |
 
-출처: [Anthropic Prompt Engineering Docs](https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview)
+출처: [Anthropic Prompting Best Practices](https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices)
+
+---
+
+## 기여
+
+steelprompt는 사람들이 사용하고 작동하지 않는 것을 보고할 때 개선됩니다.
+
+**버그나 예상치 못한 동작을 발견했나요?** [이슈 열기](https://github.com/bhutano/steelprompt/issues) — 입력한 프롬프트와 얻은 결과 vs. 예상한 결과를 설명해주세요.
+
+**아이디어가 있나요?** `enhancement` 레이블을 달아 이슈를 열어주세요. 새로운 패턴, 더 나은 예시, 프레임워크가 놓친 엣지 케이스에 대한 제안은 모두 환영합니다.
+
+**코드를 기여하고 싶나요?** 기본 규칙과 테스트 단계는 [CONTRIBUTING.md](../CONTRIBUTING.md)를 참조하세요.
 
 ---
 
