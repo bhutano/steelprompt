@@ -310,6 +310,8 @@ Configuración guardada por usuario en `$CLAUDE_PLUGIN_ROOT/.steelpromptrc`. Sin
 
 Luego escribe cualquier prompt normalmente. En lugar de responder silenciosamente, Claude te mostrará el prompt reestructurado y preguntará: **Ejecutar · Editar · Cancelar**.
 
+Si escribes en un idioma distinto al inglés, la vista previa se muestra traducida a tu idioma — pero **Run** siempre ejecuta la versión en inglés, que Claude procesa con mayor precisión.
+
 ---
 
 ## Skill manual: `/steelprompt`

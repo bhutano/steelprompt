@@ -398,9 +398,9 @@ Omit inapplicable sections. Do not fill with placeholders.
 
 Everything in the same message, no intermediate text:
 
-1. Show the engineered prompt in a code block, preceded by `**Engineered prompt:**`
+1. Detect the user's language. If not English, translate the engineered prompt into the user's language for display — keep XML tags, code blocks, and technical terms in English. Show it in a code block preceded by `**Engineered prompt:**` (or the equivalent in the user's language).
 2. One line of explanation ONLY if a choice is non-obvious
 3. Use `AskUserQuestion` with these options:
-   - **"Run"** — execute the improved prompt immediately
-   - **"Edit"** — show raw text without code block, say "Copy, edit, and paste as a new message."
+   - **"Run"** — execute the ENGLISH version of the engineered prompt
+   - **"Edit"** — show the English version without code block, say "Copy, edit, and paste as a new message."
    - **"Cancel"** — stop

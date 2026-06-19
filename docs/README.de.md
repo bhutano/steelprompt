@@ -310,6 +310,8 @@ Möchtest du den optimierten Prompt vor der Ausführung sehen? Wechsle zu `previ
 
 Dann gib einen beliebigen Prompt normal ein. Anstatt still zu antworten, zeigt Claude dir den umstrukturierten Prompt und fragt: **Ausführen · Bearbeiten · Abbrechen**.
 
+Wenn Sie in einer anderen Sprache als Englisch schreiben, wird die Vorschau in Ihrer Sprache übersetzt angezeigt — **Run** führt jedoch immer die englische Version aus, die Claude genauer verarbeitet.
+
 ---
 
 ## Manueller Skill: `/steelprompt`

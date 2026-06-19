@@ -310,6 +310,8 @@ steelprompt 还添加：Quote the relevant sections before answering.
 
 然后正常输入任何提示。Claude 不是无声地响应，而是会显示重新结构化的提示并问：**Run · Edit · Cancel**。
 
+如果您使用英语以外的语言书写，预览将以您的语言显示翻译版本 — 但 **Run** 始终执行英语版本，Claude 对此处理得更为准确。
+
 ---
 
 ## 手动技能：`/steelprompt`

@@ -310,6 +310,8 @@ Vuoi vedere il prompt ingegnerizzato prima che venga eseguito? Passa a `preview`
 
 Poi scrivi qualsiasi prompt normalmente. Invece di rispondere silenziosamente, Claude ti mostrerà il prompt ristrutturato e chiederà: **Esegui · Modifica · Annulla**.
 
+Se scrivi in una lingua diversa dall'inglese, l'anteprima viene mostrata tradotta nella tua lingua — ma **Run** esegue sempre la versione in inglese, che Claude elabora con maggiore precisione.
+
 ---
 
 ## Skill manuale: `/steelprompt`

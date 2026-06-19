@@ -311,6 +311,8 @@ Quer ver o prompt engenheirado antes de executar? Alterne para `preview`:
 
 Então digite qualquer prompt normalmente. Em vez de responder silenciosamente, Claude mostrará o prompt reestruturado e perguntará: **Run · Edit · Cancel**.
 
+Se você escrever em um idioma diferente do inglês, a visualização será exibida traduzida para o seu idioma — mas **Run** sempre executa a versão em inglês, que o Claude processa com maior precisão.
+
 ---
 
 ## Skill manual: `/steelprompt`

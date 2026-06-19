@@ -316,6 +316,8 @@ Want to see the engineered prompt before it runs? Switch to `preview`:
 
 Then type any prompt normally. Instead of responding silently, Claude will show you the restructured prompt and ask: **Run · Edit · Cancel**.
 
+If you write in a language other than English, the preview is shown translated into your language — but **Run** always executes the English version, which Claude processes more accurately.
+
 ---
 
 ## Manual skill: `/steelprompt`

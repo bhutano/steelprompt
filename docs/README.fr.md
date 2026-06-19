@@ -310,6 +310,8 @@ Vous souhaitez voir le prompt restructuré avant qu'il ne s'exécute ? Passez en
 
 Saisissez ensuite n'importe quel prompt normalement. Au lieu de répondre silencieusement, Claude vous montrera le prompt restructuré et demandera : **Run · Edit · Cancel**.
 
+Si vous écrivez dans une langue autre que l'anglais, la prévisualisation s'affiche traduite dans votre langue — mais **Run** exécute toujours la version anglaise, que Claude traite avec plus de précision.
+
 ---
 
 ## Skill manuelle : `/steelprompt`
