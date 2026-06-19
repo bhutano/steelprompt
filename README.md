@@ -7,7 +7,7 @@
 
 🌐 **English** · [中文](docs/README.zh.md) · [Español](docs/README.es.md) · [PT-BR](docs/README.pt-BR.md) · [日本語](docs/README.ja.md) · [한국어](docs/README.ko.md) · [Deutsch](docs/README.de.md) · [Français](docs/README.fr.md) · [Italiano](docs/README.it.md)
 
-[![Version](https://img.shields.io/badge/version-0.3.1-4a9eff?style=flat-square)](https://github.com/bhutano/steelprompt/releases/tag/v0.3.1)
+[![Version](https://img.shields.io/badge/version-0.4.0-4a9eff?style=flat-square)](https://github.com/bhutano/steelprompt/releases/tag/v0.4.0)
 [![License](https://img.shields.io/badge/license-MIT-22c55e?style=flat-square)](https://github.com/bhutano/steelprompt/blob/master/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.8+-f59e0b?style=flat-square)](https://python.org)
 [![Claude Code](https://img.shields.io/badge/claude_code-2.0.22+-a78bfa?style=flat-square)](https://claude.ai/code)

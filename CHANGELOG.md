@@ -4,6 +4,14 @@ All notable changes to steelprompt are documented here.
 
 ---
 
+## [0.4.0] — 2026-06-19
+
+### Changed
+- **Preview mode**: explicit rule — never execute automatically, always wait for user confirmation
+- **Preview shortcuts**: numeric aliases `1`/`2`/`3` added alongside `r`/`e`/`c`
+
+---
+
 ## [0.3.1] — 2026-06-19
 
 ### Added

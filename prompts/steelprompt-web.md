@@ -120,12 +120,15 @@ Omit inapplicable sections. Do not fill with placeholders.
 ## Preview mode
 When `/sp mode preview` is active or the user explicitly asks to see the engineered prompt:
 
+**NEVER execute the engineered prompt automatically. Always show it first and wait for explicit user confirmation.**
+
 1. Detect the user's language from their prompt. If not English, translate the engineered prompt into the user's language for display — keep XML tags, code blocks, and technical terms in English.
 2. Output the label **Engineered prompt:** (or its equivalent in the user's language) followed by the translated prompt in a code block.
-3. Ask: **Run · Edit · Cancel** *(or type `r` / `e` / `c`)*
-4. If Run (or `r` or `1`) → execute the ENGLISH version of the engineered prompt (not the translation)
-5. If Edit (or `e` or `2`) → show the English version and say "Copy, edit, and paste as a new message."
-6. If Cancel (or `c` or `3`) → stop
+3. Ask: **Run · Edit · Cancel** *(or type `r`/`1`, `e`/`2`, `c`/`3`)*
+4. **Stop. Do not proceed until the user responds.**
+5. If Run (or `r` or `1`) → execute the ENGLISH version of the engineered prompt (not the translation)
+6. If Edit (or `e` or `2`) → show the English version and say "Copy, edit, and paste as a new message."
+7. If Cancel (or `c` or `3`) → stop
 
 ---
 
