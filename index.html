@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>steelprompt — Anthropic Prompt Engineering, Automatic</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --bg:#09090f;
+  --surface:rgba(255,255,255,.04);
+  --border:rgba(255,255,255,.07);
+  --accent:#4a9eff;
+  --purple:#a78bfa;
+  --green:#22c55e;
+  --text:rgba(255,255,255,.85);
+  --muted:rgba(255,255,255,.38);
+  --mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter','Segoe UI',system-ui,sans-serif;
+  line-height:1.6;
+  min-height:100vh;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:18px 6%;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(16px);
+  background:rgba(9,9,15,.7);
+}
+.logo{
+  font-weight:800;font-size:17px;letter-spacing:-.5px;
+  color:#fff;text-decoration:none;
+  display:flex;align-items:center;gap:8px;
+}
+.logo-badge{
+  font-size:10px;padding:2px 7px;border-radius:4px;
+  background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);
+  color:var(--accent);letter-spacing:.5px;font-weight:600;
+}
+.nav-links{display:flex;gap:6px;align-items:center}
+.nav-link{
+  color:var(--muted);text-decoration:none;font-size:13px;
+  padding:7px 14px;border-radius:7px;
+  transition:color .15s,background .15s;
+}
+.nav-link:hover{color:#fff;background:var(--surface)}
+.nav-cta{
+  background:var(--accent);color:#fff;font-size:13px;font-weight:600;
+  padding:8px 18px;border-radius:8px;text-decoration:none;
+  border:none;cursor:pointer;
+  transition:opacity .15s,transform .15s;
+  display:flex;align-items:center;gap:7px;
+}
+.nav-cta:hover{opacity:.88;transform:translateY(-1px)}
+
+/* ── SECTIONS ── */
+section{position:relative;z-index:1}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 6% 80px;
+  gap:28px;
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 14px;border-radius:100px;
+  background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);
+  font-size:12px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--green);font-weight:600;
+}
+.eyebrow-dot{
+  width:5px;height:5px;background:var(--green);border-radius:50%;
+  box-shadow:0 0 6px var(--green);
+  animation:pulse 2s ease-in-out infinite;
+}
+
+.hero-title{
+  font-size:clamp(2.8rem,6vw,5.2rem);
+  font-weight:800;line-height:1.05;letter-spacing:-2.5px;
+  max-width:820px;
+}
+.hero-title .accent{
+  background:linear-gradient(130deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(1rem,1.6vw,1.15rem);
+  color:var(--muted);max-width:540px;line-height:1.75;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.btn-primary{
+  background:var(--accent);color:#fff;font-size:14px;font-weight:600;
+  padding:13px 28px;border-radius:10px;text-decoration:none;
+  border:none;cursor:pointer;
+  transition:opacity .15s,transform .2s;
+  box-shadow:0 0 28px rgba(74,158,255,.3);
+}
+.btn-primary:hover{opacity:.88;transform:translateY(-2px)}
+.btn-secondary{
+  background:var(--surface);color:var(--text);font-size:14px;
+  padding:13px 28px;border-radius:10px;text-decoration:none;
+  border:1px solid var(--border);
+  transition:border-color .15s,background .15s;
+}
+.btn-secondary:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.07)}
+
+/* Stats row */
+.hero-stats{
+  display:flex;gap:48px;padding-top:8px;flex-wrap:wrap;justify-content:center;
+}
+.stat-val{font-size:1.6rem;font-weight:800;color:#fff}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
+
+/* ── DEMO SECTION ── */
+.demo-section{
+  padding:80px 6% 100px;
+  max-width:1200px;margin:0 auto;
+}
+.section-label{
+  text-align:center;margin-bottom:64px;
+}
+.section-label h2{
+  font-size:clamp(1.8rem,3.5vw,2.8rem);
+  font-weight:800;letter-spacing:-1px;margin-bottom:12px;
+}
+.section-label p{color:var(--muted);font-size:1rem;max-width:500px;margin:0 auto}
+
+/* The before→after flow */
+.flow{
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  gap:20px;align-items:start;
+}
+@media(max-width:768px){
+  .flow{grid-template-columns:1fr;grid-template-rows:auto auto auto}
+  .flow-arrow{transform:rotate(90deg)}
+}
+
+.flow-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+}
+.flow-card-header{
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;
+}
+.header-dot{width:8px;height:8px;border-radius:50%}
+.dot-red{background:#ff5f57}
+.dot-yellow{background:#febc2e}
+.dot-green{background:#28c840}
+.flow-card-body{padding:24px}
+
+/* INPUT card */
+.input-card .flow-card-header{color:var(--muted)}
+.input-prompt{
+  font-family:var(--mono);
+  font-size:14px;
+  color:rgba(255,255,255,.65);
+  line-height:1.7;
+  background:rgba(0,0,0,.3);
+  border-radius:10px;
+  padding:18px 20px;
+  border:1px solid rgba(255,255,255,.05);
+}
+.prompt-prefix{color:var(--accent);font-weight:700;margin-right:4px}
+.input-meta{
+  display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;
+}
+.meta-chip{
+  font-size:11px;padding:3px 10px;border-radius:6px;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  color:var(--muted);
+}
+
+/* ARROW */
+.flow-arrow{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;padding-top:80px;
+  color:var(--muted);font-size:12px;
+}
+.arrow-line{
+  width:2px;height:40px;
+  background:linear-gradient(to bottom,transparent,var(--accent));
+  border-radius:1px;
+}
+.arrow-head{
+  width:0;height:0;
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:8px solid var(--accent);
+}
+.arrow-label{
+  font-size:10px;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--accent);font-weight:600;margin-top:4px;white-space:nowrap;
+}
+
+/* OUTPUT card */
+.output-card .flow-card-header{color:var(--accent)}
+.engineered-prompt{
+  font-family:var(--mono);
+  font-size:12px;
+  line-height:1.7;
+  max-height:380px;
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.1) transparent;
+}
+.ep-role{color:#c084fc}
+.ep-tag{color:rgba(74,158,255,.7)}
+.ep-content{color:rgba(255,255,255,.6)}
+.ep-thinking{color:#facc15}
+.ep-comment{color:rgba(255,255,255,.3);font-style:italic}
+
+/* ── RESULT SECTION ── */
+.result-section{
+  padding:0 6% 100px;
+  max-width:1200px;margin:0 auto;
+}
+.result-label{
+  display:flex;align-items:center;gap:12px;
+  margin-bottom:24px;
+}
+.result-badge{
+  font-size:11px;padding:4px 12px;border-radius:6px;
+  background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);
+  color:var(--purple);font-weight:600;letter-spacing:.5px;
+}
+
+.demo-preview{
+  border-radius:16px;overflow:hidden;
+  border:1px solid var(--border);
+  position:relative;
+  background:#06060e;
+}
+.demo-preview iframe{
+  width:100%;height:500px;border:none;display:block;
+  pointer-events:none;
+  transform-origin:top left;
+}
+.demo-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 60%,rgba(9,9,15,.95));
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:32px;
+}
+.demo-cta{
+  background:var(--accent);color:#fff;font-size:14px;font-weight:700;
+  padding:14px 32px;border-radius:10px;text-decoration:none;
+  border:none;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:0 0 40px rgba(74,158,255,.4);
+  transition:transform .2s,box-shadow .2s;
+}
+.demo-cta:hover{transform:translateY(-3px);box-shadow:0 16px 48px rgba(74,158,255,.5)}
+.demo-cta svg{transition:transform .2s}
+.demo-cta:hover svg{transform:translateX(3px)}
+
+/* ── HOW IT WORKS ── */
+.how-section{
+  padding:80px 6% 100px;
+  max-width:900px;margin:0 auto;
+  text-align:center;
+}
+.how-section h2{
+  font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:800;letter-spacing:-1px;margin-bottom:12px;
+}
+.how-section .sub{color:var(--muted);margin-bottom:56px}
+
+.steps{display:flex;flex-direction:column;gap:1px}
+.step{
+  display:grid;grid-template-columns:64px 1fr;
+  gap:24px;text-align:left;
+  padding:28px 0;
+  border-bottom:1px solid var(--border);
+}
+.step:last-child{border-bottom:none}
+.step-num{
+  font-size:2rem;font-weight:800;
+  background:linear-gradient(130deg,var(--accent),var(--purple));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;padding-top:4px;
+}
+.step-title{font-weight:700;font-size:1rem;margin-bottom:6px}
+.step-desc{color:var(--muted);font-size:.9rem;line-height:1.65}
+.step-code{
+  font-family:var(--mono);font-size:12px;
+  background:rgba(0,0,0,.4);border:1px solid var(--border);
+  border-radius:8px;padding:10px 14px;margin-top:10px;
+  color:rgba(255,255,255,.55);
+}
+
+/* ── INSTALL ── */
+.install-section{
+  padding:40px 6% 100px;
+  max-width:700px;margin:0 auto;text-align:center;
+}
+.install-section h2{font-size:1.8rem;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.install-section .sub{color:var(--muted);margin-bottom:32px}
+.install-block{
+  background:rgba(0,0,0,.5);border:1px solid var(--border);
+  border-radius:12px;padding:20px 24px;
+  text-align:left;position:relative;
+  font-family:var(--mono);font-size:13px;line-height:2;
+}
+.install-comment{color:var(--muted)}
+.install-cmd{color:rgba(255,255,255,.75)}
+.install-cmd .cmd-dollar{color:var(--accent);margin-right:8px}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:28px 6%;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:12px;
+}
+.footer-left{font-size:13px;color:var(--muted)}
+.footer-right{display:flex;gap:16px}
+.footer-link{
+  font-size:13px;color:var(--muted);text-decoration:none;
+  transition:color .15s;
+}
+.footer-link:hover{color:#fff}
+
+/* ── ANIMATIONS ── */
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:.5;transform:scale(.7)}
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    steelprompt
+    <span class="logo-badge">v0.4.0</span>
+  </a>
+  <div class="nav-links">
+    <a href="#demo" class="nav-link">Demo</a>
+    <a href="#how" class="nav-link">How it works</a>
+    <a href="https://github.com/bhutano/steelprompt" class="nav-link" target="_blank">GitHub</a>
+    <a href="https://github.com/bhutano/steelprompt" class="nav-cta" target="_blank">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <span class="eyebrow-dot"></span>
+    Anthropic Prompt Engineering · Automatic
+  </div>
+  <h1 class="hero-title">
+    Every prompt.<br>
+    <span class="accent">Engineered.</span>
+  </h1>
+  <p class="hero-sub">
+    steelprompt applies all 10 of Anthropic's official prompt engineering principles to every prompt — silently, before Claude responds.
+  </p>
+  <div class="hero-actions">
+    <a href="#demo" class="btn-primary">See it in action</a>
+    <a href="https://github.com/bhutano/steelprompt" class="btn-secondary" target="_blank">View on GitHub →</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="stat-val">10</div>
+      <div class="stat-label">Anthropic principles</div>
+    </div>
+    <div>
+      <div class="stat-val">3</div>
+      <div class="stat-label">Decision tiers</div>
+    </div>
+    <div>
+      <div class="stat-val">9</div>
+      <div class="stat-label">Languages</div>
+    </div>
+    <div>
+      <div class="stat-val">0ms</div>
+      <div class="stat-label">Added latency</div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO SECTION -->
+<section class="demo-section" id="demo">
+  <div class="section-label">
+    <h2>4 words in. <span style="background:linear-gradient(130deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Production-grade</span> prompt out.</h2>
+    <p>Watch steelprompt restructure a minimal prompt into a complete, structured engineering brief.</p>
+  </div>
+
+  <div class="flow">
+    <!-- INPUT -->
+    <div class="flow-card input-card">
+      <div class="flow-card-header">
+        <span class="header-dot dot-red"></span>
+        <span class="header-dot dot-yellow"></span>
+        <span class="header-dot dot-green"></span>
+        <span style="margin-left:8px">What you typed</span>
+      </div>
+      <div class="flow-card-body">
+        <div class="input-prompt">
+          <span class="prompt-prefix">/sp</span>crea una landing page<br>
+          pagina singola no scroll,<br>
+          effetto 3d. inventa,<br>
+          è solo una prova.
+        </div>
+        <div class="input-meta">
+          <span class="meta-chip">~9 words</span>
+          <span class="meta-chip">no role</span>
+          <span class="meta-chip">no constraints</span>
+          <span class="meta-chip">no format spec</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARROW -->
+    <div class="flow-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-head"></div>
+      <div class="arrow-label">steelprompt</div>
+    </div>
+
+    <!-- OUTPUT -->
+    <div class="flow-card output-card">
+      <div class="flow-card-header">
+        <span class="header-dot dot-red"></span>
+        <span class="header-dot dot-yellow"></span>
+        <span class="header-dot dot-green"></span>
+        <span style="margin-left:8px">Engineered prompt</span>
+      </div>
+      <div class="flow-card-body">
+        <div class="engineered-prompt">
+<span class="ep-role">You are a senior front-end developer</span>
+<span class="ep-content"> specializing in CSS 3D
+transforms and immersive UI.</span>
+
+<span class="ep-tag">&lt;task&gt;</span>
+<span class="ep-content">Create a single-page, no-scroll landing page
+with impactful 3D visual effects.
+1. Invent a plausible, modern fictional product
+2. Build the entire page in a single HTML file
+3. Apply 3D effects using CSS transforms
+   (rotateX, rotateY, perspective, translateZ)
+4. Page must occupy exactly 100vw × 100vh</span>
+<span class="ep-tag">&lt;/task&gt;</span>
+
+<span class="ep-tag">&lt;constraints&gt;</span>
+<span class="ep-content">- No external frameworks (no React, Tailwind, Bootstrap)
+- No vertical or horizontal scroll
+- No external images — CSS shapes and gradients only
+- All content must be readable and centered</span>
+<span class="ep-tag">&lt;/constraints&gt;</span>
+
+<span class="ep-tag">&lt;output_format&gt;</span>
+<span class="ep-content">One complete HTML file, ready to open in browser.
+Minimum: hero section with title, subtitle, CTA button.
+At least 2 elements with active 3D transformation
+(hover or continuous CSS animation).</span>
+<span class="ep-tag">&lt;/output_format&gt;</span>
+
+<span class="ep-thinking">Think through the visual composition
+step by step before writing the code.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT -->
+<section class="result-section">
+  <div class="result-label">
+    <span class="result-badge">↓ OUTPUT</span>
+    <span style="color:var(--muted);font-size:13px">Claude responded with:</span>
+  </div>
+  <div class="demo-preview">
+    <iframe src="demo/prisma.html" title="PRISMA — generated by steelprompt" scrolling="no"></iframe>
+    <div class="demo-overlay">
+      <a href="demo/prisma.html" target="_blank" class="demo-cta">
+        Open full demo
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <h2>How it works</h2>
+  <p class="sub">steelprompt runs as a hook in Claude Code — intercepting every prompt before Claude processes it.</p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">You type any prompt</div>
+        <div class="step-desc">Nothing changes on your end. Write naturally — short, long, technical, vague. steelprompt handles the rest.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">3-Tier protocol runs</div>
+        <div class="step-desc">Bypass atomic tasks. Ask one clarifying question if truly needed. Otherwise — apply all 10 Anthropic principles silently before Claude responds.</div>
+        <div class="step-code">Bypass → Ask → Apply Framework</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Claude gets a structured brief</div>
+        <div class="step-desc">Role · Context + motivation · Task · XML structure · Constraints · Output format · Thinking · Examples · Tool use · Long context.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">You get a better response</div>
+        <div class="step-desc">No API calls. No extra tokens. Zero added latency. Claude restructures inline during its normal inference.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTALL -->
+<section class="install-section">
+  <h2>Install in 2 commands</h2>
+  <p class="sub">Requires Claude Code 2.0.22+ and Python 3.8+</p>
+  <div class="install-block">
+    <div><span class="install-comment"># Add the marketplace</span></div>
+    <div class="install-cmd"><span class="cmd-dollar">$</span>claude plugin marketplace add bhutano/bhutano-marketplace</div>
+    <div style="margin-top:8px"><span class="install-comment"># Install steelprompt</span></div>
+    <div class="install-cmd"><span class="cmd-dollar">$</span>claude plugin install steelprompt</div>
+  </div>
+  <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+    <a href="https://github.com/bhutano/steelprompt" class="btn-primary" target="_blank">View on GitHub</a>
+    <a href="https://raw.githubusercontent.com/bhutano/steelprompt/master/prompts/steelprompt-web.md" class="btn-secondary" target="_blank">Web prompt (Claude.ai)</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-left">steelprompt · MIT License · built by bhutano</span>
+  <div class="footer-right">
+    <a href="https://github.com/bhutano/steelprompt" class="footer-link" target="_blank">GitHub</a>
+    <a href="https://github.com/bhutano/steelprompt/blob/master/CHANGELOG.md" class="footer-link" target="_blank">Changelog</a>
+    <a href="https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices" class="footer-link" target="_blank">Anthropic docs</a>
+  </div>
+</footer>
+
+</body>
+</html>

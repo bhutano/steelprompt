@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRISMA — Holographic Display</title>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  width:100vw;height:100vh;overflow:hidden;
+  background:#06060e;
+  font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ── Background grid ── */
+.bg-grid{
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(120,80,255,.07) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(120,80,255,.07) 1px,transparent 1px);
+  background-size:55px 55px;
+  transform:perspective(700px) rotateX(38deg) scaleY(2.2) translateY(20%);
+  transform-origin:center bottom;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* ── Glow orbs ── */
+.orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+.orb-1{width:500px;height:500px;top:-180px;left:-160px;
+  background:radial-gradient(circle,rgba(109,40,217,.35),transparent 70%)}
+.orb-2{width:420px;height:420px;bottom:-140px;right:-120px;
+  background:radial-gradient(circle,rgba(14,165,233,.28),transparent 70%)}
+.orb-3{width:280px;height:280px;top:50%;left:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(192,132,252,.18),transparent 70%)}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;
+  padding:22px 6%;
+  display:flex;align-items:center;justify-content:space-between;
+  z-index:100;
+  backdrop-filter:blur(2px);
+  border-bottom:1px solid rgba(255,255,255,.04);
+  animation:fadeDown .7s ease both;
+}
+.logo{
+  font-size:20px;font-weight:800;letter-spacing:-1px;
+  background:linear-gradient(130deg,#c084fc,#38bdf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{color:rgba(255,255,255,.45);text-decoration:none;font-size:13px;
+  transition:color .2s}
+.nav-links a:hover{color:#fff}
+.nav-btn{
+  padding:8px 20px;border-radius:8px;
+  border:1px solid rgba(192,132,252,.35);
+  color:rgba(192,132,252,.85);font-size:13px;
+  background:rgba(192,132,252,.07);cursor:pointer;
+  transition:all .2s;
+}
+.nav-btn:hover{background:rgba(192,132,252,.18);border-color:rgba(192,132,252,.6);color:#c084fc}
+
+/* ── MAIN GRID ── */
+.scene{
+  position:relative;z-index:10;
+  width:100%;height:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  padding:80px 6% 0;
+  gap:20px;
+}
+
+/* ── LEFT: Hero text ── */
+.hero-text{display:flex;flex-direction:column;gap:0}
+
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:5px 14px;border-radius:100px;
+  background:rgba(109,40,217,.15);
+  border:1px solid rgba(109,40,217,.35);
+  font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+  color:#c084fc;width:fit-content;
+  margin-bottom:24px;
+  animation:fadeUp .7s .1s ease both;
+}
+.badge-dot{
+  width:5px;height:5px;background:#a855f7;border-radius:50%;
+  box-shadow:0 0 6px #a855f7;
+  animation:pulse 2s infinite;
+}
+
+.hero-title{
+  font-size:clamp(2.6rem,4.5vw,4.4rem);
+  font-weight:800;line-height:1.06;letter-spacing:-2px;
+  margin-bottom:20px;
+  animation:fadeUp .7s .15s ease both;
+}
+.grad{
+  background:linear-gradient(130deg,#c084fc 30%,#38bdf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.outline-txt{
+  -webkit-text-stroke:1.5px rgba(255,255,255,.25);
+  -webkit-text-fill-color:transparent;
+}
+
+.hero-sub{
+  font-size:clamp(.88rem,1.3vw,1.05rem);
+  color:rgba(255,255,255,.45);line-height:1.75;
+  max-width:400px;margin-bottom:36px;
+  animation:fadeUp .7s .2s ease both;
+}
+
+.cta-row{display:flex;gap:14px;align-items:center;animation:fadeUp .7s .25s ease both}
+.btn-main{
+  padding:13px 30px;border-radius:10px;
+  background:linear-gradient(135deg,#7c3aed,#2563eb);
+  border:none;color:#fff;font-size:14px;font-weight:600;
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 0 24px rgba(124,58,237,.4);
+  text-decoration:none;display:inline-block;
+}
+.btn-main::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  pointer-events:none;
+}
+.btn-main:hover{transform:translateY(-3px);box-shadow:0 10px 36px rgba(124,58,237,.55)}
+
+.btn-ghost{
+  display:flex;align-items:center;gap:9px;
+  color:rgba(255,255,255,.5);font-size:14px;
+  background:none;border:none;cursor:pointer;
+  transition:color .2s;
+}
+.btn-ghost:hover{color:#fff}
+.ghost-arrow{
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+  transition:transform .2s,background .2s;
+}
+.btn-ghost:hover .ghost-arrow{transform:translateX(4px);background:rgba(255,255,255,.13)}
+
+/* Stats */
+.stats{
+  display:flex;gap:28px;
+  margin-top:40px;padding-top:28px;
+  border-top:1px solid rgba(255,255,255,.07);
+  animation:fadeUp .7s .3s ease both;
+}
+.sv{
+  font-size:1.5rem;font-weight:800;
+  background:linear-gradient(130deg,#c084fc,#38bdf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sl{font-size:11px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px}
+
+/* ── RIGHT: 3D Object ── */
+.cube-wrap{
+  display:flex;align-items:center;justify-content:center;
+  height:100%;perspective:900px;
+  animation:fadeUp .7s .05s ease both;
+}
+.float-scene{
+  transform-style:preserve-3d;
+  animation:floatY 5s ease-in-out infinite;
+  transition:transform .1s ease-out;
+}
+
+/* Orbit rings */
+.ring{
+  position:absolute;border-radius:50%;
+  border:1px solid rgba(168,85,247,.2);
+  transform-style:preserve-3d;
+}
+.ring-1{
+  width:300px;height:300px;
+  top:50%;left:50%;margin:-150px 0 0 -150px;
+  transform:rotateX(72deg);
+  animation:spinR 9s linear infinite;
+}
+.ring-2{
+  width:380px;height:380px;
+  top:50%;left:50%;margin:-190px 0 0 -190px;
+  transform:rotateX(72deg) rotateZ(55deg);
+  animation:spinR 15s linear infinite reverse;
+}
+.dot{
+  position:absolute;border-radius:50%;
+  top:-5px;left:50%;transform:translateX(-50%);
+}
+.dot-1{width:10px;height:10px;background:#a855f7;box-shadow:0 0 12px #a855f7,0 0 24px rgba(168,85,247,.5)}
+.dot-2{width:7px;height:7px;background:#38bdf8;box-shadow:0 0 10px #38bdf8;top:-4px}
+
+/* Cube */
+.cube{
+  width:180px;height:180px;
+  transform-style:preserve-3d;
+  animation:rotateCube 14s linear infinite;
+  position:relative;
+}
+.face{
+  position:absolute;width:180px;height:180px;
+  border:1px solid rgba(168,85,247,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;
+  background:rgba(255,255,255,.018);
+  backdrop-filter:blur(2px);
+}
+.f-fr{transform:translateZ(90px)}
+.f-bk{transform:rotateY(180deg) translateZ(90px)}
+.f-lt{transform:rotateY(-90deg) translateZ(90px)}
+.f-rt{transform:rotateY(90deg) translateZ(90px)}
+.f-tp{transform:rotateX(90deg) translateZ(90px);background:rgba(56,189,248,.04)}
+.f-bt{transform:rotateX(-90deg) translateZ(90px);background:rgba(168,85,247,.04)}
+
+.core{
+  position:absolute;
+  width:60px;height:60px;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(168,85,247,.9),transparent 70%);
+  border-radius:50%;filter:blur(3px);
+  animation:coreGlow 2.5s ease-in-out infinite;
+}
+
+/* ── FEATURE CARDS ── */
+.cards{
+  position:fixed;bottom:6%;right:6%;
+  display:flex;gap:10px;z-index:20;
+}
+.card{
+  padding:14px 18px;
+  background:rgba(255,255,255,.025);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;
+  backdrop-filter:blur(12px);
+  cursor:pointer;
+  transition:transform .3s ease,border-color .3s,background .3s,box-shadow .3s;
+  transform-style:preserve-3d;
+  animation:fadeUp .7s ease both;
+  min-width:110px;
+}
+.card:nth-child(1){animation-delay:.4s}
+.card:nth-child(2){animation-delay:.5s}
+.card:nth-child(3){animation-delay:.6s}
+.card:hover{
+  background:rgba(109,40,217,.12);
+  border-color:rgba(109,40,217,.35);
+  box-shadow:0 16px 32px rgba(109,40,217,.2);
+}
+.ci{font-size:20px;margin-bottom:7px}
+.ct{font-size:12px;font-weight:600;margin-bottom:3px}
+.cd{font-size:10px;color:rgba(255,255,255,.4);line-height:1.5}
+
+/* Corner tag */
+.version-tag{
+  position:fixed;bottom:6%;left:6%;z-index:20;
+  display:flex;align-items:center;gap:8px;
+  animation:fadeUp .7s .5s ease both;
+}
+.vt-line{width:32px;height:1px;background:rgba(255,255,255,.2)}
+.vt-txt{font-size:11px;color:rgba(255,255,255,.3);letter-spacing:1.5px;text-transform:uppercase}
+
+/* ── ANIMATIONS ── */
+@keyframes rotateCube{
+  0%  {transform:rotateX(0) rotateY(0)}
+  100%{transform:rotateX(360deg) rotateY(360deg)}
+}
+@keyframes floatY{
+  0%,100%{transform:translateY(0)}
+  50%    {transform:translateY(-18px)}
+}
+@keyframes spinR{
+  from{transform:rotateX(72deg) rotateZ(0)}
+  to  {transform:rotateX(72deg) rotateZ(360deg)}
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%    {opacity:.5;transform:scale(.7)}
+}
+@keyframes coreGlow{
+  0%,100%{opacity:.8;transform:translate(-50%,-50%) scale(1)}
+  50%    {opacity:1;transform:translate(-50%,-50%) scale(1.5)}
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-12px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+/* ── SCANLINE OVERLAY ── */
+body::after{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent,transparent 2px,
+    rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px
+  );
+  pointer-events:none;z-index:999;
+}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">PRISMA</div>
+  <ul class="nav-links">
+    <li><a href="#">Product</a></li>
+    <li><a href="#">Technology</a></li>
+    <li><a href="#">Pricing</a></li>
+  </ul>
+  <button class="nav-btn">Request Access</button>
+</nav>
+
+<!-- MAIN -->
+<div class="scene">
+
+  <!-- Left -->
+  <div class="hero-text">
+    <div class="badge"><span class="badge-dot"></span>Next-Gen · Holographic</div>
+    <h1 class="hero-title">
+      See the world<br>
+      <span class="grad">in three</span><br>
+      <span class="outline-txt">dimensions.</span>
+    </h1>
+    <p class="hero-sub">
+      PRISMA reinvents how you perceive digital space. Our holographic engine renders reality-grade 3D without glasses, headsets, or compromise.
+    </p>
+    <div class="cta-row">
+      <a href="#" class="btn-main">Get Early Access</a>
+      <button class="btn-ghost">
+        <span class="ghost-arrow">›</span>
+        Watch Demo
+      </button>
+    </div>
+    <div class="stats">
+      <div><div class="sv">16K</div><div class="sl">Resolution</div></div>
+      <div><div class="sv">240Hz</div><div class="sl">Refresh Rate</div></div>
+      <div><div class="sv">∞</div><div class="sl">Depth Range</div></div>
+    </div>
+  </div>
+
+  <!-- Right: 3D Cube -->
+  <div class="cube-wrap" id="cubeWrap">
+    <div class="float-scene" id="floatScene">
+      <div class="ring ring-1"><div class="dot dot-1"></div></div>
+      <div class="ring ring-2"><div class="dot dot-2"></div></div>
+      <div class="cube">
+        <div class="face f-fr">◈</div>
+        <div class="face f-bk">◈</div>
+        <div class="face f-lt">◈</div>
+        <div class="face f-rt">◈</div>
+        <div class="face f-tp">◈</div>
+        <div class="face f-bt">◈</div>
+        <div class="core"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Feature cards -->
+<div class="cards">
+  <div class="card">
+    <div class="ci">⬡</div>
+    <div class="ct">Spatial Engine</div>
+    <div class="cd">Real-time depth<br>mapping @ 240fps</div>
+  </div>
+  <div class="card">
+    <div class="ci">◎</div>
+    <div class="ct">Zero Latency</div>
+    <div class="cd">Sub-1ms render<br>pipeline</div>
+  </div>
+  <div class="card">
+    <div class="ci">✦</div>
+    <div class="ct">AI Enhanced</div>
+    <div class="cd">Neural upscaling<br>for perfect clarity</div>
+  </div>
+</div>
+
+<!-- Version tag -->
+<div class="version-tag">
+  <div class="vt-line"></div>
+  <div class="vt-txt">v2.0 Preview</div>
+</div>
+
+<script>
+// Mouse parallax on cube
+const fs = document.getElementById('floatScene');
+let tx = 0, ty = 0, cx = 0, cy = 0;
+document.addEventListener('mousemove', e => {
+  const mx = (e.clientX / window.innerWidth  - .5);
+  const my = (e.clientY / window.innerHeight - .5);
+  tx = mx * 18; ty = -my * 12;
+});
+(function loop(){
+  cx += (tx - cx) * .06;
+  cy += (ty - cy) * .06;
+  fs.style.transform = `rotateY(${cx}deg) rotateX(${cy}deg)`;
+  requestAnimationFrame(loop);
+})();
+
+// Card tilt
+document.querySelectorAll('.card').forEach(c => {
+  c.addEventListener('mousemove', e => {
+    const r = c.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - .5;
+    const y = (e.clientY - r.top)  / r.height - .5;
+    c.style.transform = `translateY(-8px) rotateX(${-y*14}deg) rotateY(${x*14}deg)`;
+  });
+  c.addEventListener('mouseleave', () => c.style.transform = '');
+});
+</script>
+</body>
+</html>
