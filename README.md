@@ -442,6 +442,18 @@ Source: [Anthropic Prompting Best Practices](https://platform.claude.com/docs/en
 
 ---
 
+## Contributing
+
+steelprompt improves when people use it and report what doesn't work.
+
+**Found a bug or unexpected behavior?** [Open an issue](https://github.com/bhutano/steelprompt/issues) — describe the prompt you typed and what you got vs. what you expected.
+
+**Have an idea?** Open an issue with the `enhancement` label. Suggestions for new patterns, better examples, or edge cases the framework misses are all welcome.
+
+**Want to contribute code?** See [CONTRIBUTING.md](CONTRIBUTING.md) for ground rules and testing steps.
+
+---
+
 ## Acknowledgements
 
 Architecture inspired by [severity1/claude-code-prompt-improver](https://github.com/severity1/claude-code-prompt-improver). No shared code.
